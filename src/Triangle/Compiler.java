@@ -80,12 +80,12 @@ public class Compiler {
         encoder  = new Encoder(reporter);
         drawer   = new Drawer();
 
-        // scanner.enableDebugging();
+        scanner.enableDebugging();
         theAST = parser.parseProgram();				// 1st pass
         if (reporter.numErrors == 0) {
-            //if (showingAST) {
-            //    drawer.draw(theAST);
-            //}
+            if (showingAST) {
+                drawer.draw(theAST);
+            }
             System.out.println ("Contextual Analysis ...");
             checker.check(theAST);				// 2nd pass
             if (showingAST) {
@@ -99,7 +99,7 @@ public class Compiler {
 
 	boolean successful = (reporter.numErrors == 0);
         if (successful) {
-            encoder.saveObjectProgram(objectName);
+            //encoder.saveObjectProgram(objectName);
             System.out.println("Compilation was successful.");
         } else {
             System.out.println("Compilation was unsuccessful.");
