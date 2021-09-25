@@ -88,6 +88,46 @@ public class TableVisitor implements Visitor {
     public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
         return null;
     }
+
+    @Override
+    public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
+        return null;
+    }
     // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Expressions ">
@@ -274,6 +314,16 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
+        return null;
+    }
+
+    @Override
+    public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
         return null;
     }
 

@@ -59,8 +59,41 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitCondRestOfIf(CondRestOfIf ast, Object obj) {
-        return(createTernary("Rest of If", ast.E, ast.C, ast.CIF));
+        return(createTernary("RestOfIf", ast.E, ast.C, ast.CIF));
     }
+
+    public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
+        return(createBinary("RepeatDoWhile", ast.C, ast.E));
+    }
+
+    public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+        return(createBinary("RepeatWhile", ast.E, ast.C));
+    }
+
+    public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
+        return(createBinary("RepeatUntil", ast.E, ast.C));
+    }
+
+    public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
+        return(createBinary("RepeatDoUntil", ast.C, ast.E));
+    }
+
+    public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
+        return(createQuaternary("RepeatForRangeWhile", ast.RVD, ast.E1, ast.E2, ast.C));
+    }
+
+    public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
+        return(createQuaternary("RepeatForRangeUntil", ast.RVD, ast.E2, ast.E3, ast.C));
+    }
+
+    public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
+        return(createTernary("RepeatForRangeDo", ast.RVD, ast.E2, ast.C));
+    }
+
+    public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
+        return(createBinary("RepeatForIn", ast.IVD, ast.C));
+    }
+
 
     // </editor-fold>
     
@@ -149,6 +182,10 @@ public class TreeVisitor implements Visitor {
         return(createBinary("Variable Expression Declaration", ast.I, ast.E));
     }
 
+    public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
+        return(createBinary("Range Var Declaration", ast.I, ast.E));
+    }
+
     public Object visitLocalDeclaration(LocalDeclaration ast, Object obj) {
         return(createBinary("Local Declaration", ast.D1, ast.D1));
     }
@@ -159,6 +196,10 @@ public class TreeVisitor implements Visitor {
 
     public Object visitRecursiveDeclaration(RecursiveDeclaration ast, Object obj) {
         return(createUnary("Recursive Declaration", ast.PF));
+    }
+
+    public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
+        return(createBinary("InVarDeclaration", ast.I, ast.E));
     }
 
     // </editor-fold>

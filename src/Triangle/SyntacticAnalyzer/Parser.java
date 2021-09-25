@@ -17,10 +17,6 @@ package Triangle.SyntacticAnalyzer;
 import Triangle.AbstractSyntaxTrees.*;
 import Triangle.ErrorReporter;
 
-import java.lang.reflect.Parameter;
-import java.net.CookieHandler;
-import java.util.Optional;
-
 public class Parser {
 
   private Scanner lexicalAnalyser;
@@ -278,6 +274,7 @@ public class Parser {
                 Command cAST_WHILE = parseCommand();
                 accept(Token.END);
                 finish(commandPos);
+                commandAST = new RepeatWhileCommand(eAST_WHILE, cAST_WHILE, commandPos);
                 //llama al contructor de RepeatWhile
                 break;
             
@@ -289,6 +286,7 @@ public class Parser {
                 Command cAST_UNTIL = parseCommand();
                 accept(Token.END);
                 finish(commandPos);
+                commandAST = new RepeatUntilCommand(eAST_UNTIL, cAST_UNTIL, commandPos);
                 //llama al contructor de RepeatUntil
                 break;
 
@@ -301,12 +299,14 @@ public class Parser {
                     Expression eAST_DO = parseExpression();
                     accept(Token.END);
                     finish(commandPos);
+                    commandAST = new RepeatDoWhileCommand(cAST_DO, eAST_DO, commandPos);
                     //llama al contructor RepeatDoWhile
                 }else if (currentToken.kind ==Token.UNTIL){//_______RepeatDoUntil
                     acceptIt();
                     Expression eAST_DO = parseExpression();
                     accept(Token.END);
                     finish(commandPos);
+                    commandAST = new RepeatDoUntilCommand(cAST_DO, eAST_DO, commandPos);
                     //llama al contructor RepeatDoUntil
                 }else{
                     syntacticError("\"%\" while or until expected here", currentToken.spelling);
@@ -318,8 +318,11 @@ public class Parser {
                 Identifier iAST_FOR= parseIdentifier();
                 
                 if (currentToken.kind == Token.BECOMES){//_______the first 3 ways to "repeat for"
+                    acceptIt();
                     accept(Token.RANGE);
                     Expression e1AST = parseExpression();
+
+                    Declaration rvdAST = new RangeVarDeclaration(iAST_FOR, e1AST, commandPos);
 
                     //llama al contructor RangeVarDecl
 
@@ -327,19 +330,23 @@ public class Parser {
                     Expression e2AST = parseExpression();
                     switch (currentToken.kind){
                         case Token.WHILE://_______RepeatForRangeWhile
+                            acceptIt();
                             Expression e3AST_WHILE = parseExpression();
                             accept(Token.DO);
                             Command cAST_FOR_WHILE = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
+                            commandAST = new RepeatForRangeWhileCommand(rvdAST, e2AST, e3AST_WHILE, cAST_FOR_WHILE, commandPos);
                             //llama al contructor de RepeatForRangeWhile
                             break;
                         case Token.UNTIL://_______RepeatForRangeUNTIL
+                            acceptIt();
                             Expression e3AST_UNTIL = parseExpression();
                             accept(Token.DO);
                             Command cAST_FOR_UNTIL = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
+                            commandAST = new RepeatForRangeUntilCommand(rvdAST, e2AST, e3AST_UNTIL, cAST_FOR_UNTIL, commandPos);
                             //llama al contructor de RepeatForRangeUNTIL
                             break;
 
@@ -347,6 +354,7 @@ public class Parser {
                             Command cAST_FOR_DO = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
+                            commandAST = new RepeatForRangeDoCommand(rvdAST, e2AST, cAST_FOR_DO, commandPos);
                             //llama al contructor RepeatForRange
                             break;
                         default:
@@ -358,9 +366,11 @@ public class Parser {
                     Expression e1AST_IN = parseExpression();
 
                     //llama al contructor InVarDecl
+                    Declaration invdAST = new InVarDeclaration(iAST_FOR, e1AST_IN, commandPos);
 
                     Command cAST_FOR_IN = parseCommand();
                     accept(Token.END);
+                    Command riAST = new RepeatForInCommand(invdAST, cAST_FOR_IN, commandPos);
                     finish(commandPos);
                     //llama al contructor RepeatIn
                 }else{

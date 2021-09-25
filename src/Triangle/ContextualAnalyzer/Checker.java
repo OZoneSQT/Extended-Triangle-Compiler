@@ -96,6 +96,46 @@ public final class Checker implements Visitor {
     return null;
   }
 
+  @Override
+  public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
+    return null;
+  }
+
   // Expressions
 
   // Returns the TypeDenoter denoting the type of the expression. Does
@@ -312,6 +352,16 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
+    return null;
+  }
+
+  @Override
+  public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
     return null;
   }
 

@@ -58,9 +58,27 @@ public class LayoutVisitor implements Visitor {
     return layoutBinary("WhileCom.", ast.E, ast.C);
   }
 
-  public Object visitEndRestOfIf(EndRestOfIF ast, Object obj) { return  layoutUnary("Rest of If", ast.C);}
+  public Object visitEndRestOfIf(EndRestOfIF ast, Object obj) { return  layoutUnary("ElseRestOfIf", ast.C);}
 
-  public Object visitCondRestOfIf(CondRestOfIf ast, Object obj) { return layoutTernary("Rest of If", ast.E, ast.C, ast.CIF);}
+  public Object visitCondRestOfIf(CondRestOfIf ast, Object obj) { return layoutTernary("CondRestOfIf", ast.E, ast.C, ast.CIF);}
+
+  public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) { return layoutBinary("RepeatDoWhile", ast.C, ast.E); }
+
+  public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) { return layoutBinary("RepeatWhile", ast.E, ast.C); }
+
+  public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) { return layoutBinary("repeatUntil", ast.E, ast.C); }
+
+  public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) { return layoutBinary("RepeatDoUntil", ast.E, ast.C); }
+
+  public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) { return layoutQuaternary("RepeatForRangeWhile", ast.RVD, ast.E1, ast.E2, ast.C); }
+
+  public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) { return layoutQuaternary("RepeatForRangeUntil", ast.RVD, ast.E2, ast.E3, ast.C); }
+
+  public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) { return layoutTernary("RepeatForRangeDo", ast.RVD, ast.E2, ast.C); }
+
+  public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) { return layoutBinary("RepeatForIn", ast.IVD, ast.C); }
+
+  public Object visitInVarDeclaration(InVarDeclaration ast, Object o) { return layoutBinary("InVarDeclaration", ast.I, ast.E); }
 
 
   // Expressions
@@ -143,6 +161,8 @@ public class LayoutVisitor implements Visitor {
   }
 
   public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object obj){ return layoutBinary("VarExpDecl", ast.I, ast.E); }
+
+  public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) { return layoutBinary("RangeVarDeclaration", ast.I, ast.E); }
 
   public Object visitSequentialProcFunc(SequentialProcFunc ast, Object obj) { return layoutBinary("Seq.ProcFunc", ast.PFD1, ast.PFD2); }
 

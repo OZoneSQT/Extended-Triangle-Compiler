@@ -26,7 +26,14 @@ public interface Visitor {
   public abstract Object visitWhileCommand(WhileCommand ast, Object o);
   public abstract Object visitEndRestOfIf(EndRestOfIF ast, Object o);
   public abstract Object visitCondRestOfIf(CondRestOfIf ast, Object o);
-
+  public abstract Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o);
+  public abstract Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o);
+  public abstract Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o);
+  public abstract Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o);
+  public abstract Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o);
+  public abstract Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o);
+  public abstract Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o);
+  public abstract Object visitRepeatForInCommand(RepeatForInCommand ast, Object o);
 
   // Expressions
   public abstract Object visitArrayExpression(ArrayExpression ast, Object o);
@@ -54,6 +61,8 @@ public interface Visitor {
   public abstract Object visitLocalDeclaration(LocalDeclaration ast, Object o);
   public abstract Object visitRecursiveDeclaration(RecursiveDeclaration ast, Object o);
   public abstract Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o);
+  public abstract Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o);
+  public abstract Object visitInVarDeclaration(InVarDeclaration ast, Object o);
 
   // Array Aggregates
   public abstract Object visitMultipleArrayAggregate(MultipleArrayAggregate ast, Object o);
@@ -109,5 +118,6 @@ public interface Visitor {
 
   // Programs
   public abstract Object visitProgram(Program ast, Object o);
+
 
 }
