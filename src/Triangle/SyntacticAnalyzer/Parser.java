@@ -266,6 +266,115 @@ public class Parser {
         commandAST = new WhileCommand(eAST, cAST, commandPos);
       }
       break;
+        
+    case Token.REPEAT:{
+        acceptIt();
+        //Hacer el otro switch
+        switch (currentToken.kind){
+            case Token.WHILE://_______RepeatWhile
+                acceptIt();
+                Expression eAST_WHILE = parseExpression();
+                accept(Token.DO);
+                Command cAST_WHILE = parseCommand();
+                accept(Token.END);
+                finish(commandPos);
+                //llama al contructor de RepeatWhile
+                break;
+            
+
+            case Token.UNTIL://_______RepeatUntil
+                acceptIt();
+                Expression eAST_UNTIL = parseExpression();
+                accept(Token.DO);
+                Command cAST_UNTIL = parseCommand();
+                accept(Token.END);
+                finish(commandPos);
+                //llama al contructor de RepeatUntil
+                break;
+
+            case Token.DO://_______The 2 ways to "repeat do"
+                acceptIt();
+                Command cAST_DO = parseCommand();
+                
+                if (currentToken.kind ==Token.WHILE){//_______RepeatDoWhile
+                    acceptIt();
+                    Expression eAST_DO = parseExpression();
+                    accept(Token.END);
+                    finish(commandPos);
+                    //llama al contructor RepeatDoWhile
+                }else if (currentToken.kind ==Token.UNTIL){//_______RepeatDoUntil
+                    acceptIt();
+                    Expression eAST_DO = parseExpression();
+                    accept(Token.END);
+                    finish(commandPos);
+                    //llama al contructor RepeatDoUntil
+                }else{
+                    syntacticError("\"%\" while or until expected here", currentToken.spelling);
+                }
+                break;
+
+            case Token.FOR://_______the 4 ways to "repeat for"
+                acceptIt();
+                Identifier iAST_FOR= parseIdentifier();
+                
+                if (currentToken.kind == Token.BECOMES){//_______the first 3 ways to "repeat for"
+                    accept(Token.RANGE);
+                    Expression e1AST = parseExpression();
+
+                    //llama al contructor RangeVarDecl
+
+                    accept(Token.DOTDOT);
+                    Expression e2AST = parseExpression();
+                    switch (currentToken.kind){
+                        case Token.WHILE://_______RepeatForRangeWhile
+                            Expression e3AST_WHILE = parseExpression();
+                            accept(Token.DO);
+                            Command cAST_FOR_WHILE = parseCommand();
+                            accept(Token.END);
+                            finish(commandPos);
+                            //llama al contructor de RepeatForRangeWhile
+                            break;
+                        case Token.UNTIL://_______RepeatForRangeUNTIL
+                            Expression e3AST_UNTIL = parseExpression();
+                            accept(Token.DO);
+                            Command cAST_FOR_UNTIL = parseCommand();
+                            accept(Token.END);
+                            finish(commandPos);
+                            //llama al contructor de RepeatForRangeUNTIL
+                            break;
+
+                        case Token.DO://_______RepeatForRange
+                            Command cAST_FOR_DO = parseCommand();
+                            accept(Token.END);
+                            finish(commandPos);
+                            //llama al contructor RepeatForRange
+                            break;
+                        default:
+                            syntacticError("\"%\" while, until or do expected here", currentToken.spelling); 
+                            break;
+
+                    }
+                }else if(currentToken.kind == Token.IN){//_______RepeatIn
+                    Expression e1AST_IN = parseExpression();
+
+                    //llama al contructor InVarDecl
+
+                    Command cAST_FOR_IN = parseCommand();
+                    accept(Token.END);
+                    finish(commandPos);
+                    //llama al contructor RepeatIn
+                }else{
+                    syntacticError("\"%\" := or in expected here", currentToken.spelling);
+                }
+                break;
+
+            default:
+                syntacticError("\"%\" while, until, do or for expected here", currentToken.spelling); 
+                break;
+            
+        } 
+      }
+      break;
 
     case Token.SKIP:
      {
