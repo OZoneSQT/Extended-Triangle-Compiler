@@ -13,4 +13,8 @@ book Programming Language Procesors in Java by (Watt & Brown, 2000).
 
 The IDE created for this compiler was developed by Doc.Luís Leopoldo Pérez in 2005.
 
+## Limitations
+
+The IDE developed for this compiler only works in Microsoft Windows operating system.
+
 

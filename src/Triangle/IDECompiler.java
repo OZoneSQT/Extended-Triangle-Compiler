@@ -13,6 +13,7 @@ import Triangle.AbstractSyntaxTrees.Program;
 import Triangle.SyntacticAnalyzer.Parser;
 import Triangle.ContextualAnalyzer.Checker;
 import Triangle.CodeGenerator.Encoder;
+import Triangle.TreeWriterXML.Writer;
 
 
 
@@ -62,9 +63,13 @@ public class IDECompiler {
                 //encoder.encodeRun(rootAST, false);   DISABLED FOR THE FIRST PROJECT
                 
                 if (report.numErrors == 0) {
+
                     //encoder.saveObjectProgram(sourceName.replace(".tri", ".tam"));  DISABLED FOR THE FIRST PROJECT
+                    Writer xmlWriter = new Writer(sourceName.replace(".tri", ".xml"));
+                    xmlWriter.write(rootAST);
                     success = true;
                 }
+                
             }
         }
 
