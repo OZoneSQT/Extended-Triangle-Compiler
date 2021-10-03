@@ -8,7 +8,7 @@ mutually recursive procedures or functions and local (private) compound declarat
 
 ## Production rules
 
-The production rules for extended triangle are located in [Production-rules.md](./Production-rules.md).
+The production rules for extended triangle are located in [production-rules.md](./production-rules.md).
 
 ## Credits
 

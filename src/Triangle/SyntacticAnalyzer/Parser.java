@@ -233,7 +233,7 @@ public class Parser {
         acceptIt();
         Declaration dAST = parseDeclaration();
         accept(Token.IN);
-        Command cAST = parseSingleCommand();
+        Command cAST = parseCommand();
         accept(Token.END);
         finish(commandPos);
         commandAST = new LetCommand(dAST, cAST, commandPos);
@@ -351,6 +351,7 @@ public class Parser {
                             break;
 
                         case Token.DO://_______RepeatForRange
+                            acceptIt();
                             Command cAST_FOR_DO = parseCommand();
                             accept(Token.END);
                             finish(commandPos);
@@ -363,14 +364,15 @@ public class Parser {
 
                     }
                 }else if(currentToken.kind == Token.IN){//_______RepeatIn
+                    acceptIt();
                     Expression e1AST_IN = parseExpression();
 
                     //llama al contructor InVarDecl
                     Declaration invdAST = new InVarDeclaration(iAST_FOR, e1AST_IN, commandPos);
-
+                    accept(Token.DO);
                     Command cAST_FOR_IN = parseCommand();
                     accept(Token.END);
-                    Command riAST = new RepeatForInCommand(invdAST, cAST_FOR_IN, commandPos);
+                    commandAST = new RepeatForInCommand(invdAST, cAST_FOR_IN, commandPos);
                     finish(commandPos);
                     //llama al contructor RepeatIn
                 }else{
@@ -394,16 +396,6 @@ public class Parser {
      }
      break;
 
-    case Token.SEMICOLON:
-    case Token.ELSE:
-    case Token.IN:
-    case Token.EOT:
-    {
-       acceptIt();
-       finish(commandPos);
-       commandAST = new EmptyCommand(commandPos);
-    }
-    break;
 
     default:
       syntacticError("\"%\" cannot start a command",
@@ -728,6 +720,7 @@ public class Parser {
       {
         acceptIt();
         Declaration pfAST = parseProcFuncs();
+        accept(Token.END);
         finish(declarationPos);
         compoundDeclaration = new RecursiveDeclaration(pfAST, declarationPos);
       }
