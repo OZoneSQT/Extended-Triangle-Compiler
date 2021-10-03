@@ -332,9 +332,9 @@ public class WriterVisitor implements Visitor {
 
     @Override
     public Object visitRecursiveDeclaration(RecursiveDeclaration ast, Object o) {
-        writeTag("<RecursiveDeclaration");
+        writeTag("<RecursiveDeclaration>");
         ast.PF.visit(this, null);
-        writeTag("</RecursiveDeclaration");
+        writeTag("</RecursiveDeclaration>");
         return null;
     }
 

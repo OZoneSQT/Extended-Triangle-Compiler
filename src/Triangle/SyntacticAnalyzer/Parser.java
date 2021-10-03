@@ -265,9 +265,10 @@ public class Parser {
         
     case Token.REPEAT:{
         acceptIt();
-        //Hacer el otro switch
+
         switch (currentToken.kind){
-            case Token.WHILE://_______RepeatWhile
+
+            case Token.WHILE:   // Repeat while case in handled
                 acceptIt();
                 Expression eAST_WHILE = parseExpression();
                 accept(Token.DO);
@@ -275,11 +276,10 @@ public class Parser {
                 accept(Token.END);
                 finish(commandPos);
                 commandAST = new RepeatWhileCommand(eAST_WHILE, cAST_WHILE, commandPos);
-                //llama al contructor de RepeatWhile
                 break;
             
 
-            case Token.UNTIL://_______RepeatUntil
+            case Token.UNTIL:   //RepeatUntil
                 acceptIt();
                 Expression eAST_UNTIL = parseExpression();
                 accept(Token.DO);
@@ -287,27 +287,27 @@ public class Parser {
                 accept(Token.END);
                 finish(commandPos);
                 commandAST = new RepeatUntilCommand(eAST_UNTIL, cAST_UNTIL, commandPos);
-                //llama al contructor de RepeatUntil
                 break;
 
-            case Token.DO://_______The 2 ways to "repeat do"
+            case Token.DO:                  //The 2 ways to "repeat do"
                 acceptIt();
                 Command cAST_DO = parseCommand();
                 
-                if (currentToken.kind ==Token.WHILE){//_______RepeatDoWhile
+                if (currentToken.kind ==Token.WHILE){           //RepeatDoWhile
                     acceptIt();
                     Expression eAST_DO = parseExpression();
                     accept(Token.END);
                     finish(commandPos);
                     commandAST = new RepeatDoWhileCommand(cAST_DO, eAST_DO, commandPos);
-                    //llama al contructor RepeatDoWhile
-                }else if (currentToken.kind ==Token.UNTIL){//_______RepeatDoUntil
+
+                }else if (currentToken.kind ==Token.UNTIL){             //RepeatDoUntil
+
                     acceptIt();
                     Expression eAST_DO = parseExpression();
                     accept(Token.END);
                     finish(commandPos);
                     commandAST = new RepeatDoUntilCommand(cAST_DO, eAST_DO, commandPos);
-                    //llama al contructor RepeatDoUntil
+
                 }else{
                     syntacticError("\"%\" while or until expected here", currentToken.spelling);
                 }
@@ -324,7 +324,7 @@ public class Parser {
 
                     Declaration rvdAST = new RangeVarDeclaration(iAST_FOR, e1AST, commandPos);
 
-                    //llama al contructor RangeVarDecl
+                    //llama al constructor RangeVarDecl
 
                     accept(Token.DOTDOT);
                     Expression e2AST = parseExpression();
@@ -447,8 +447,7 @@ public class Parser {
 
       default:
         System.out.println(Token.PIPE);
-        syntacticError("\"%\" cannot start a command",
-                currentToken.spelling);
+        syntacticError("\"%\" pipe or else expected here", currentToken.spelling);
         break;
 
     }
@@ -749,7 +748,7 @@ public class Parser {
 
       default:
       {
-        syntacticError("\"%\" cannot start a declaration", currentToken.spelling);
+        syntacticError("\"%\" recursive or local expected here", currentToken.spelling);
         break;
       }
     }
@@ -908,8 +907,7 @@ public class Parser {
       break;
 
       default:
-        syntacticError("\"%\" cannot start a proc func",
-                currentToken.spelling);
+        syntacticError("\"%\" proc or func expected here", currentToken.spelling);
         break;
     }
 
