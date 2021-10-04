@@ -219,5 +219,72 @@ public final class Scanner {
       System.out.println(tok);
     return tok;
   }
+	
+  public Token scanText () {
+    //scanText() scan the .tri file to make a .html file, scanText() is a "scan() variation"
+    Token tok;
+    SourcePosition pos;
+    String text="";//text is used yo save comment text.
+    int kind;
+    int specialToken=0;//specialToken is a flag(here and in the HTMLWriter class) to know if the text is a comment, space, \n or \t
+
+    currentlyScanningToken = false;
+    //First, verify if the text is a comment, space, \n or \t
+    switch (currentChar) {
+      case '!':
+        {
+          text=text+currentChar;
+          specialToken=-1;
+          takeIt();
+          while ((currentChar != SourceFile.EOL) && (currentChar != SourceFile.EOT)){
+            text=text+currentChar;
+            takeIt();
+          } 
+          if (currentChar == SourceFile.EOL){
+            specialToken=-2;
+            takeIt();
+          }
+        }
+        break;
+		    
+      case ' ':
+        specialToken=-3;
+        takeIt();
+        break; 
+		    
+      case '\n':    
+        specialToken=-4;
+        takeIt();
+        break; 
+		    
+      case '\t':
+        specialToken=-5;
+        takeIt();
+        break;
+    }
+
+    currentlyScanningToken = true;
+    currentSpelling = new StringBuffer("");
+    pos = new SourcePosition();
+    pos.start = sourceFile.getCurrentLine();
+
+    if(specialToken==0){//if the text is a token
+      kind = scanToken();
+      pos.finish = sourceFile.getCurrentLine();
+      tok = new Token(kind, currentSpelling.toString(), pos);
+    }else{//if the text is a comment, space, \n or \t
+    
+      /*the token constructor is manipulated o tricked to create a valid token and then 
+      modify its attributes and create a special token for when it is a comment, space, \t or \n */
+      kind=0;
+      pos.finish = sourceFile.getCurrentLine();
+      tok = new Token(kind, currentSpelling.toString(), pos);
+      tok.kind=specialToken;tok.spelling=text;
+    }
+
+    if (debug)
+      System.out.println(tok);
+    return tok;
+  }
 
 }
