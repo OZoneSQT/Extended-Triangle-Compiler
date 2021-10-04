@@ -14,6 +14,7 @@ import Triangle.SyntacticAnalyzer.Parser;
 import Triangle.ContextualAnalyzer.Checker;
 import Triangle.CodeGenerator.Encoder;
 import Triangle.TreeWriterXML.Writer;
+import Triangle.SyntacticAnalyzer.HTMLWriter;
 
 
 
@@ -22,7 +23,7 @@ import Triangle.TreeWriterXML.Writer;
  * to get to the ASTs in order to draw them in the IDE without modifying the
  * original Triangle code.
  *
- * @author Luis Leopoldo Pérez <luiperpe@ns.isi.ulatina.ac.cr>
+ * @author Luis Leopoldo PÃ©rez <luiperpe@ns.isi.ulatina.ac.cr>
  */
 public class IDECompiler {
 
@@ -51,6 +52,9 @@ public class IDECompiler {
         report = new IDEReporter();
         Parser parser = new Parser(scanner, report);
         boolean success = false;
+        
+        HTMLWriter htmlWriter = new HTMLWriter(sourceName.replace(".tri", ".html"), scanner);
+        htmlWriter.write();
         
         rootAST = parser.parseProgram();
         if (report.numErrors == 0) {
