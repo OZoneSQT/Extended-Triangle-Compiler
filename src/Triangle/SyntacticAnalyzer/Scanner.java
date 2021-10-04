@@ -261,6 +261,11 @@ public final class Scanner {
         specialToken=-5;
         takeIt();
         break;
+		    
+      case '\r':
+        specialToken=-6;
+        takeIt();
+        break;
     }
 
     currentlyScanningToken = true;
