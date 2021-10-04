@@ -18,8 +18,6 @@ public class HTMLWriter {
     }
     public void write(){
         try {
-            FileWriter fileWriter = new FileWriter(fileName);
-
             //HTML header
             textHTML="<p style=\"font-family: 'DejaVu Sans', monospace;\">";
 
@@ -65,7 +63,7 @@ public class HTMLWriter {
                         }else{//Token.ERROR = Lexical Error
                             return;
                         }
-                        break
+                        break;
                     
                 }
                 currentToken = lexicalAnalyser.scanText();
