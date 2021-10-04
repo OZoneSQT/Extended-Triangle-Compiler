@@ -52,11 +52,14 @@ public class IDECompiler {
         report = new IDEReporter();
         Parser parser = new Parser(scanner, report);
         boolean success = false;
+                
+        rootAST = parser.parseProgram();
         
-        HTMLWriter htmlWriter = new HTMLWriter(sourceName.replace(".tri", ".html"), scanner);
+        SourceFile sourceHTML = new SourceFile(sourceName);
+        Scanner scannerHTML = new Scanner(sourceHTML);
+        HTMLWriter htmlWriter = new HTMLWriter(sourceName.replace(".tri", ".html"), scannerHTML);
         htmlWriter.write();
         
-        rootAST = parser.parseProgram();
         if (report.numErrors == 0) {
             System.out.println("Contextual Analysis ...");
             Checker checker = new Checker(report);
