@@ -9,6 +9,7 @@ public class HTMLWriter {
     private String fileName;
     private Scanner lexicalAnalyser;
     private Token currentToken;
+    private String textHTML="";
 
     public HTMLWriter (String fileName, Scanner lexicalAnalyser) {
         this.fileName = fileName;
@@ -20,7 +21,7 @@ public class HTMLWriter {
             FileWriter fileWriter = new FileWriter(fileName);
 
             //HTML header
-            fileWriter.write("<p style=\"font-family: 'DejaVu Sans', monospace;\">");
+            textHTML="<p style=\"font-family: 'DejaVu Sans', monospace;\">";
 
             //scan begins
             currentToken = lexicalAnalyser.scanText();
@@ -30,44 +31,50 @@ public class HTMLWriter {
                 switch (currentToken.kind){
                     case Token.INTLITERAL:
                     case Token.CHARLITERAL:
-                        fileWriter.write("<font color='#0000cd'>"+currentToken.spelling+"</font>");
+                        textHTML=textHTML+"<font color='#0000cd'>"+currentToken.spelling+"</font>";
                         break;
 
                     case -1://if the text is a comment
-                        fileWriter.write("<font color='#00b300'>"+currentToken.spelling+"</font>");
+                        textHTML=textHTML+"<font color='#00b300'>"+currentToken.spelling+"</font>";
                         break;
                     case -2://if the text is a comment with a EOL
-                        fileWriter.write("<font color='#00b300'>"+currentToken.spelling+"</font>");
-                        fileWriter.write("<br>");
+                        textHTML=textHTML+"<font color='#00b300'>"+currentToken.spelling+"</font>";
+                        textHTML=textHTML+"<br>";
                         break;
                     case -3://if the text is a space
-                        fileWriter.write("<font style='padding-left:1em'></font>");
+                        textHTML=textHTML+"<font style='padding-left:1em'></font>";
                         break;
                     case -4://if the text is a \n
-                        fileWriter.write("<br>");
+                        textHTML=textHTML+"<br>";
                         break;
                     case -5://if the text is a \t
-                        fileWriter.write("<font style='padding-left:4em'></font>");
+                        textHTML=textHTML+"<font style='padding-left:4em'></font>";
+                        break;
+                    case -6://if the text is a \r
                         break;
 
 
                     default://if is a reserved word or the other token
                         if (currentToken.kind>Token.OPERATOR && currentToken.kind<Token.DOT){ //reserved word
-                            fileWriter.write("<b>"+currentToken.spelling+"</b>");
+                            textHTML=textHTML+"<b>"+currentToken.spelling+"</b>";
                             //System.out.println("IF: "+currentToken.spelling+" Numero: "+currentToken.kind);
                             
-                        }else{//the other token
-                            fileWriter.write(currentToken.spelling);
+                        }else if(currentToken.kind>-1 && currentToken.kind<45) {//the other token
+                            textHTML=textHTML+currentToken.spelling;
                             //System.out.println("ELSE: "+currentToken.spelling+" Numero: "+currentToken.kind);
+                        }else{//Token.ERROR = Lexical Error
+                            return;
                         }
-                        break;
+                        break
                     
                 }
                 currentToken = lexicalAnalyser.scanText();
             }
             //close the main tag
-            fileWriter.write("</p>"); 
+            textHTML=textHTML+"</p>";
 
+            FileWriter fileWriter = new FileWriter(fileName);
+            fileWriter.write(textHTML);
             fileWriter.close();
 
         } catch (IOException e) {
