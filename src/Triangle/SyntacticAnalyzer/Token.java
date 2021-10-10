@@ -12,6 +12,39 @@
  * of the authors.
  */
 
+
+/*
+  ITCR- IC-5701 - Proyecto 1
+  Modificación realizada
+  Token agregados
+  * dotdot
+  * for
+  * from
+  * local
+  * pipe
+  * range
+  * recursive
+  * repeat
+  * select
+  * skip
+  * to
+  * until
+  * when
+
+  Token eliminados
+  * begin
+
+  Autores:
+  Eric Alpizar y Jacob Picado
+
+  Descripción:
+  Se agregaron los nuevos tokens compuestos por las palabras reservadas
+  y los caracteres nuevos (pipe y dotdot). además se eliminó el token begin.
+  Esto causó que se modificara la tabla de tokens.
+
+  Ultima fecha de modificación:
+  24/09/2021
+*/
 package Triangle.SyntacticAnalyzer;
 
 
