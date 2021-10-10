@@ -3,6 +3,19 @@ package Triangle.SyntacticAnalyzer;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/*
+    ITCR- IC-5701 - Proyecto 1
+    Modificación realizada
+
+    Autores:
+    Eric Alpizar y Jacob Picado
+
+    Descripción:
+    Se creó la clase HTMLWriter que junto a su método write() son los encargados de crear el archivo .html.
+
+    Ultima fecha de modificación:
+    03/10/2021
+*/
 
 public class HTMLWriter {
 
