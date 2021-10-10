@@ -12,6 +12,42 @@
  * of the authors.
  */
 
+
+/*
+
+ITCR- IC-5701 - Proyecto 1
+
+Modificaciones realizadas
+
+Subrutinas modificadas
+
+* parseCommand()
+* parseSingleCommand()
+* parseDeclaration()
+* parseSingleDeclaration()
+
+Subrutinas agregadas
+
+* parseRestOfIf()
+* parseRestOfVname()
+* parseCompoundDeclaration()
+* parseProcFuncs()
+* parseProcFunc()
+
+Autores:
+Eric Alpizar y Jacob Picado
+
+Descripción:
+
+Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
+todas las reglas de produccion de Triangulo extendido
+
+Ultima fecha de modificación:
+
+28/09/2021
+
+ */
+
 package Triangle.SyntacticAnalyzer;
 
 import Triangle.AbstractSyntaxTrees.*;
@@ -407,6 +443,15 @@ public class Parser {
     return commandAST;
   }
 
+  /*
+
+  Nueva subrutina: parseRestOfIf
+
+  Se encarga de procesar el restante del comando IF y construye el AST
+  correctamente para representarlo.
+
+   */
+
   Command parseRestOfIf() throws SyntaxError {
 
     Command commandAST = null; // in case there's a syntactic error
@@ -698,6 +743,16 @@ public class Parser {
     return declarationAST;
   }
 
+    /*
+
+    Nueva subrutina: parseCompoundDeclaration()
+
+    Se encarga de procesar respectivamente las nuevas declaraciones
+    compuestas y construye el AST para representarlo
+
+     */
+
+
   Declaration parseCompoundDeclaration() throws SyntaxError {
     Declaration compoundDeclaration = null;
     SourcePosition declarationPos = new SourcePosition();
@@ -749,6 +804,7 @@ public class Parser {
     return compoundDeclaration;
 
   }
+
 
   Declaration parseSingleDeclaration() throws SyntaxError {
     Declaration declarationAST = null; // in case there's a syntactic error
@@ -838,6 +894,16 @@ public class Parser {
     }
     return declarationAST;
   }
+
+    /*
+
+    Nueva subrutina: parseProcFuncs()
+
+    Encargada de analizar la sintaxis de las nuevas
+    declaraciones Proc-Func y construye su respectivo
+    AST para representarlo.
+
+     */
 
   Declaration parseProcFuncs() throws SyntaxError {
 

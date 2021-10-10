@@ -1,3 +1,23 @@
+/*
+
+ITCR- IC-5701 - Proyecto 1
+
+Modificaciones realizadas
+
+Autores:
+Eric Alpizar y Jacob Picado
+
+Descripción:
+
+Clase Writer para la correcta generacion del AST correspondiente
+a los programas compilados por Triangulo Extendido
+
+Ultima fecha de modificación:
+
+30/09/2021
+
+ */
+
 package Triangle.TreeWriterXML;
 
 import Triangle.AbstractSyntaxTrees.Program;

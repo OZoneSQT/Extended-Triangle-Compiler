@@ -54,6 +54,8 @@ public class IDECompiler {
         boolean success = false;
                 
         rootAST = parser.parseProgram();
+
+        // Se llama al writer del generador de HTML
         
         SourceFile sourceHTML = new SourceFile(sourceName);
         Scanner scannerHTML = new Scanner(sourceHTML);

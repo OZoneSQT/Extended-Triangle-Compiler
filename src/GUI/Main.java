@@ -39,6 +39,8 @@ import javax.swing.event.InternalFrameListener;
 import Core.Visitors.TreeVisitor;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.sun.java.swing.plaf.windows.*;
+
 /**
  * The Main class. Contains the main form.
  *

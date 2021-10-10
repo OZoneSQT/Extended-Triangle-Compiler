@@ -1,3 +1,23 @@
+/*
+
+ITCR- IC-5701 - Proyecto 1
+
+Modificaciones realizadas
+
+Autores:
+Eric Alpizar y Jacob Picado
+
+Descripción:
+
+Creación de los visitors necesarios para el funcionamiento del Writer encargado
+de generar el XML correspondiente de los programas compilados.
+
+Ultima fecha de modificación:
+
+30/09/2021
+
+ */
+
 package Triangle.TreeWriterXML;
 
 

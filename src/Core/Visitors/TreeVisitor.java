@@ -2,7 +2,43 @@
  * IDE-Triangle v1.0
  * TreeVisitor.java
  */
+/*
 
+ITCR- IC-5701 - Proyecto 1
+
+Modificaciones realizadas
+
+Autores:
+Eric Alpizar y Jacob Picado
+
+Descripción:
+
+Se agregaron los suguientes visitors necesarios para Triangulo Extendido.
+
+  * visitVarDeclaration
+  * visitVarExpressionDeclaration
+  * visitRangeVarDeclaration
+  * visitSequentialProcFunc
+  * visitLocalDeclaration
+  * visitRecursiveDeclaration
+  * visitWhileCommand
+  * visitEndRestOfIf
+  * visitCondRestOfIf
+  * visitRepeatDoWhileCommand
+  * visitRepeatWhileCommand
+  * visitRepeatUntilCommand
+  * visitRepeatDoUntilCommand
+  * visitRepeatForRangeWhileCommand
+  * visitRepeatForRangeUntilCommand
+  * visitRepeatForRangeDoCommand
+  * visitRepeatForInCommand
+  * visitInVarDeclaration
+
+Ultima fecha de modificación:
+
+30/09/2021
+
+ */
 package Core.Visitors;
 import Triangle.AbstractSyntaxTrees.*;
 

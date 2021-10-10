@@ -219,6 +219,8 @@ public final class Scanner {
       System.out.println(tok);
     return tok;
   }
+
+
 	
   public Token scanText () {
     //scanText() scan the .tri file to make a .html file, scanText() is a "scan() variation"
