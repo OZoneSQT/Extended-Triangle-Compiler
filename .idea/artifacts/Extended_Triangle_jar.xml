@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Extended Triangle:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Extended_Triangle_jar</output-path>
+    <root id="archive" name="Extended Triangle.jar">
+      <element id="module-output" name="Extended Triangle" />
+    </root>
+  </artifact>
+</component>
