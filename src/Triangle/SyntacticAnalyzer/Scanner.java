@@ -12,6 +12,28 @@
  * of the authors.
  */
 
+/*
+  ITCR- IC-5701 - Proyecto 1
+  Modificaciones realizadas
+
+  Métodos agregados:
+  * scanText()
+
+  Caracteres agregados:
+  * Pipe: |
+  * DotDot: ..
+
+  Autores:
+  Eric Alpizar y Jacob Picado
+
+  Descripción:
+  Se agregaron los nuevos caracteres "|" y "..".
+  Se agregó un nuevo método llamado scanText() que funciona como apoyo para generar el archivo .html
+
+  Ultima fecha de modificación:
+  03/10/2021
+ */
+
 package Triangle.SyntacticAnalyzer;
 
 
@@ -220,7 +242,12 @@ public final class Scanner {
     return tok;
   }
 
-
+/*
+Se agregó el método scantext() que funciona como apoyo para la generación del archivo .html.
+Este método devuelve, los tokens, espacios, tabulaciones, cambios de linea y comentarios para que 
+el método .write() de la clase HTMLWriter pueda aplicarle el formato correspondiente a cada elemento
+cuando crea el archivo.
+*/
 	
   public Token scanText () {
     //scanText() scan the .tri file to make a .html file, scanText() is a "scan() variation"
