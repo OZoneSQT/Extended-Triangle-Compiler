@@ -25,6 +25,31 @@ import Triangle.SyntacticAnalyzer.HTMLWriter;
  *
  * @author Luis Leopoldo Pérez <luiperpe@ns.isi.ulatina.ac.cr>
  */
+
+/*
+    ITCR- IC-5701 - Proyecto 1
+    Modificación realizada
+    ¿Qué se agregó?
+    * La creación del archivo .html
+    * La creación del archivo .xml
+
+    ¿Qué se comentó?
+    * las linea: checker.check(rootAST);
+    * las linea: encoder.encodeRun(rootAST, false);
+    * las linea: encoder.saveObjectProgram(sourceName.replace(".tri", ".tam"));
+
+    Autores:
+    Eric Alpizar y Jacob Picado
+
+    Descripción:
+    Se agregó la creación de los archivos .html y .xml, creando el objeto y realizando
+    el método .write() respectivo para cada objeto.
+
+    Ultima fecha de modificación:
+    03/10/2021
+ */
+
+
 public class IDECompiler {
 
     // <editor-fold defaultstate="collapsed" desc=" Methods ">
