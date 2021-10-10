@@ -1,5 +1,24 @@
 package Triangle.AbstractSyntaxTrees;
 
+/*
+
+ITCR- IC-5701 - Proyecto 1
+
+Modificaciones realizadas
+
+Autores:
+Eric Alpizar y Jacob Picado
+
+Descripción:
+
+Nueva estructura de datos para el AST de RepeatDoUntilCommand
+
+Ultima fecha de modificación:
+
+28/09/2021
+
+ */
+
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
 public class RepeatDoUntilCommand extends Command {
