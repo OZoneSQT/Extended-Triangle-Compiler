@@ -87,9 +87,7 @@ public final class Checker implements Visitor {
   }
 
   @Override
-  public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
-    return null;
-  }
+  public Object visitEndRestOfIf(EndRestOfIF ast, Object o) { return null; }
 
   @Override
   public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
@@ -98,21 +96,37 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
   @Override
   public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
   @Override
   public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
   @Override
   public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
@@ -342,6 +356,10 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitLocalDeclaration(LocalDeclaration ast, Object o) {
+    idTable.openScope();
+    ast.D1.visit(this, null);
+    ast.D2.visit(this, null);
+    idTable.closeScope();
     return null;
   }
 

@@ -291,7 +291,7 @@ public class TableVisitor implements Visitor {
   public Object visitVarDeclaration(VarDeclaration ast, Object o) {      
       try {
       addIdentifier(ast.I.spelling, 
-              "KnownAddress", 
+              "KnownAddress",
               (ast.entity!=null?ast.entity.size:0), 
               ((KnownAddress)ast.entity).address.level, 
               ((KnownAddress)ast.entity).address.displacement, 
