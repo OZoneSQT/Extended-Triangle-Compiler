@@ -223,7 +223,7 @@ public class TreeVisitor implements Visitor {
     }
 
     public Object visitLocalDeclaration(LocalDeclaration ast, Object obj) {
-        return(createBinary("Local Declaration", ast.D1, ast.D1));
+        return(createBinary("Local Declaration", ast.D1, ast.D2));
     }
 
     public Object visitSequentialProcFunc(SequentialProcFunc ast, Object obj) {

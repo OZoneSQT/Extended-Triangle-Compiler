@@ -288,17 +288,6 @@ public class Parser {
         }
       break;
 
-    case Token.WHILE:
-      {
-        acceptIt();
-        Expression eAST = parseExpression();
-        accept(Token.DO);
-        Command cAST = parseSingleCommand();
-        finish(commandPos);
-        commandAST = new WhileCommand(eAST, cAST, commandPos);
-      }
-      break;
-        
     case Token.REPEAT:{
         acceptIt();
 
@@ -784,7 +773,6 @@ public class Parser {
       case Token.LOCAL:
       {
         acceptIt();
-
         Declaration d1AST = parseDeclaration();
         accept(Token.IN);
         Declaration d2AST = parseDeclaration();
@@ -919,6 +907,8 @@ public class Parser {
         Declaration pfdAST = parseProcFunc();
         finish(declarationPos);
         procFuncsDecAST = new SequentialProcFunc(procFuncsDecAST, pfdAST, declarationPos);
+      } else {
+          syntacticError("\"%\" Expected pipe here", currentToken.spelling);
       }
     } while(currentToken.kind == Token.PIPE);
 

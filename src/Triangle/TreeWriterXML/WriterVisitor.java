@@ -92,7 +92,7 @@ public class WriterVisitor implements Visitor {
     public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
         writeTag("<RestOfIf>");
         ast.C.visit(this, null);
-        writeTag("</RestOfIf");
+        writeTag("</RestOfIf>");
         return null;
     }
 
@@ -100,7 +100,7 @@ public class WriterVisitor implements Visitor {
     public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
         writeTag("<RestOfIf>");
         ast.C.visit(this, null);
-        writeTag("</RestOfIf");
+        writeTag("</RestOfIf>");
         return null;
     }
 
@@ -127,7 +127,7 @@ public class WriterVisitor implements Visitor {
         writeTag("<RepeatUntilCommand>");
         ast.E.visit(this, null);
         ast.C.visit(this, null);
-        writeTag("<RepeatUntilCommand>");
+        writeTag("</RepeatUntilCommand>");
         return null;
     }
 

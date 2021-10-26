@@ -370,6 +370,12 @@ public final class Checker implements Visitor {
 
   @Override
   public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    ast.T = eType;
+    idTable.enter(ast.I.spelling, ast);
+    if (ast.duplicated)
+      reporter.reportError ("identifier \"%\" already declared",
+              ast.I.spelling, ast.position);
     return null;
   }
 
@@ -743,6 +749,9 @@ public final class Checker implements Visitor {
         ast.variable = false;
       } else if (binding instanceof VarFormalParameter) {
         ast.type = ((VarFormalParameter) binding).T;
+        ast.variable = true;
+      } else if (binding instanceof VarExpressionDeclaration) {
+        ast.type = ((VarExpressionDeclaration) binding).T;
         ast.variable = true;
       } else
         reporter.reportError ("\"%\" is not a const or var identifier",
