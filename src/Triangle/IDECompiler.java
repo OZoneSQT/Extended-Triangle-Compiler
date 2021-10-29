@@ -90,7 +90,7 @@ public class IDECompiler {
         if (report.numErrors == 0) {
             System.out.println("Contextual Analysis ...");
             Checker checker = new Checker(report);
-            //checker.check(rootAST);               DISABLED FOR THE FIRST PROJECT
+            checker.check(rootAST);
             if (report.numErrors == 0) {
                 System.out.println("Code Generation ...");
                 Encoder encoder = new Encoder(report);

@@ -895,7 +895,7 @@ public class Parser {
 
   Declaration parseProcFuncs() throws SyntaxError {
 
-    Declaration procFuncsDecAST = null;
+    ProcFuncDeclaration procFuncsDecAST = null;
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);
 
@@ -904,7 +904,7 @@ public class Parser {
       if(currentToken.kind == Token.PIPE)
       {
         acceptIt();
-        Declaration pfdAST = parseProcFunc();
+        ProcFuncDeclaration pfdAST = parseProcFunc();
         finish(declarationPos);
         procFuncsDecAST = new SequentialProcFunc(procFuncsDecAST, pfdAST, declarationPos);
       } else {
@@ -916,8 +916,8 @@ public class Parser {
 
   }
 
-  Declaration parseProcFunc() throws SyntaxError {
-    Declaration procFuncDeclarationAST = null; // in case there's a syntactic error
+  ProcFuncDeclaration parseProcFunc() throws SyntaxError {
+    ProcFuncDeclaration procFuncDeclarationAST = null; // in case there's a syntactic error
 
     SourcePosition declarationPos = new SourcePosition();
     start(declarationPos);

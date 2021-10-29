@@ -16,7 +16,7 @@ package Triangle.AbstractSyntaxTrees;
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
-public class ProcDeclaration extends Declaration {
+public class ProcDeclaration extends ProcFuncDeclaration {
 
   public ProcDeclaration (Identifier iAST, FormalParameterSequence fpsAST,
   		   Command cAST, SourcePosition thePosition) {
@@ -29,6 +29,9 @@ public class ProcDeclaration extends Declaration {
   public Object visit (Visitor v, Object o) {
     return v.visitProcDeclaration(this, o);
   }
+  public Object visitRecursivePass1(RecursiveVisitor v, Object o) {return v.visitRecursiveProcRec1(this, o); }
+  public Object visitRecursivePass2(RecursiveVisitor v, Object o) {return v.visitRecursiveProcRec2(this, o); }
+
 
   public Identifier I;
   public FormalParameterSequence FPS;

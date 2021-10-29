@@ -16,14 +16,20 @@ package Triangle.ContextualAnalyzer;
 
 import Triangle.AbstractSyntaxTrees.Declaration;
 
+import java.util.Stack;
+
 public final class IdentificationTable {
 
   private int level;
   private IdEntry latest;
+  private Stack<IdEntry> privateEntry;
+  private Stack<IdEntry> publicEntry;
 
   public IdentificationTable () {
     level = 0;
     latest = null;
+    privateEntry = new Stack<>();
+    publicEntry = new Stack<>();
   }
 
   // Opens a new level in the identification table, 1 higher than the
@@ -50,6 +56,44 @@ public final class IdentificationTable {
     this.level--;
     this.latest = entry;
   }
+
+
+  public void openPrivate() {
+    IdEntry publicLatest = this.latest;
+    publicEntry.push(publicLatest);
+
+  }
+
+
+  public void openPublic() {
+    IdEntry privateLatest = this.latest;
+    privateEntry.push(privateLatest);
+  }
+
+  public void closePrivate() {
+
+    IdEntry local, tmp, entry, priEntry, pubEntry;
+    priEntry = privateEntry.pop();
+    pubEntry = publicEntry.pop();
+
+    entry = this.latest;
+    while (!(entry.previous == priEntry)) {
+      entry = entry.previous;
+    }
+
+    tmp = entry.previous;
+
+    while (!(tmp.previous == pubEntry)) {
+      local = tmp;
+      tmp = local.previous;
+    }
+
+    entry.previous = tmp;
+
+    this.latest = entry;
+
+  }
+
 
   // Makes a new entry in the identification table for the given identifier
   // and attribute. The new entry belongs to the current level.

@@ -22,8 +22,8 @@ Ultima fecha de modificación:
 
 import Triangle.SyntacticAnalyzer.SourcePosition;
 
-public class SequentialProcFunc extends Declaration {
-    public SequentialProcFunc(Declaration pfd1AST, Declaration pfd2AST, SourcePosition thePosition) {
+public class SequentialProcFunc extends ProcFuncDeclaration {
+    public SequentialProcFunc(ProcFuncDeclaration pfd1AST, ProcFuncDeclaration pfd2AST, SourcePosition thePosition) {
         super(thePosition);
         PFD1 = pfd1AST;
         PFD2 = pfd2AST;
@@ -32,7 +32,7 @@ public class SequentialProcFunc extends Declaration {
     @Override
     public Object visit(Visitor v, Object o) { return v.visitSequentialProcFunc(this, o); }
 
-    public Declaration PFD1;
-    public Declaration PFD2;
+    public ProcFuncDeclaration PFD1;
+    public ProcFuncDeclaration PFD2;
 
 }
