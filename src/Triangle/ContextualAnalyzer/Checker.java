@@ -12,6 +12,50 @@
  * of the authors.
  */
 
+/*
+
+ITCR- IC-5701 - Proyecto 1
+
+Modificaciones realizadas
+
+Subrutinas modificadas
+
+* visitSimpleVname()
+* parseSingleCommand()
+* parseDeclaration()
+* parseSingleDeclaration()
+
+Subrutinas agregadas
+
+
+* visitRecursiveDeclaration()
+* visitSequentialProcFunc()
+* visitRecursiveProcRec1()
+* visitRecursiveProcRec2()
+* visitRecursiveFuncRec1()
+* visitRecursiveFuncRec2()
+* visitLocalDeclaration()
+* visitEndRestOfIf()
+* visitCondRestOfIf()
+* visitRepeatWhile()
+* visitRepeatDo()
+* visitVarExpressionDeclaration()
+
+Autores:
+Eric Alpizar y Jacob Picado
+
+Descripción:
+
+Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
+todas las reglas contextuales de triangulo extendido
+
+Ultima fecha de modificación:
+
+06/11/2021
+
+ */
+
+
 package Triangle.ContextualAnalyzer;
 
 import Triangle.AbstractSyntaxTrees.*;
@@ -92,6 +136,10 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
+  // Checks if the type of the condition is boolean and
+  // visits the command inside, returns null is everything
+  // is OK.
+
   @Override
   public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
@@ -100,6 +148,10 @@ public final class Checker implements Visitor, RecursiveVisitor {
     ast.C.visit(this, null);
     return null;
   }
+
+  // Checks if the type of the condition is boolean and
+  // visits the command inside, returns null is everything
+  // is OK.
 
   @Override
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
@@ -110,6 +162,10 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
+  // Checks if the type of the condition is boolean and
+  // visits the command inside, returns null is everything
+  // is OK.
+
   @Override
   public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
@@ -119,6 +175,12 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
+
+  // Checks if the type of the condition is boolean and
+  // visits the command inside, returns null is everything
+  // is OK.
+
+
   @Override
   public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
@@ -127,6 +189,11 @@ public final class Checker implements Visitor, RecursiveVisitor {
     ast.C.visit(this, null);
     return null;
   }
+
+  // Checks if the type of the condition is boolean and
+  // visits the command inside, returns null is everything
+  // is OK.
+
 
   @Override
   public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
@@ -334,6 +401,11 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
+  // Visits the proc-func inside the sequential proc-func with two passes
+  // in order to make the recursive declaration work. The first pass records
+  // the declarations in the identification table and the second one visits
+  // the body of the proc-func declarations.
+
   @Override
   public Object visitSequentialProcFunc(SequentialProcFunc ast, Object o) {
 
@@ -349,59 +421,6 @@ public final class Checker implements Visitor, RecursiveVisitor {
     ast.PFD2.visitRecursivePass2(this, null);
     return null;
   }
-
-
-  // NOTA: El siguiente código es una implementación alterna de la implementación de recursive
-
-/*
-  public Object visitSequentialProcFuncRec1(SequentialProcFunc ast, Object o) {
-
-
-
-    if (ast.PFD1 instanceof ProcDeclaration) {
-      System.out.println("Entro a ProcDeclaration PFD1");
-      visitProcDeclarationRec1((ProcDeclaration) ast.PFD1, null);
-    } else if (ast.PFD1 instanceof FuncDeclaration) {
-      System.out.println("Entro a FuncDeclaration PFD1");
-      visitFuncDeclarationRec1((FuncDeclaration) ast.PFD1, null);
-    }
-
-    if (ast.PFD2 instanceof FuncDeclaration) {
-      System.out.println("Entro a FuncDeclaration PFD2");
-      visitFuncDeclarationRec1((FuncDeclaration) ast.PFD2, null);
-    } else if (ast.PFD2 instanceof ProcDeclaration) {
-      System.out.println("Entro a ProcDeclaration PFD2");
-      visitProcDeclarationRec1((ProcDeclaration) ast.PFD2, null);
-    }
-
-    return null;
-  }
-
-
-  public Object visitSequentialProcFuncRec2(SequentialProcFunc ast, Object o) {
-
-
-    if (ast.PFD1 instanceof SequentialProcFunc) {
-      visitSequentialProcFuncRec2((SequentialProcFunc) ast.PFD1, null);
-    } else if (ast.PFD2 instanceof SequentialProcFunc) {
-      visitSequentialProcFuncRec2((SequentialProcFunc) ast.PFD2, null);
-    }
-
-    if (ast.PFD1 instanceof ProcDeclaration) {
-      visitProcDeclarationRec2((ProcDeclaration) ast.PFD1, null);
-    } else if (ast.PFD1 instanceof FuncDeclaration) {
-      visitFuncDeclarationRec2((FuncDeclaration) ast.PFD1, null);
-    }
-
-    if (ast.PFD2 instanceof FuncDeclaration) {
-      visitFuncDeclarationRec2((FuncDeclaration) ast.PFD2, null);
-    } else if (ast.PFD2 instanceof ProcDeclaration) {
-      visitProcDeclarationRec2((ProcDeclaration) ast.PFD2, null);
-    }
-    return null;
-  }
-
-  */
 
 
   public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
@@ -443,10 +462,7 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
-  @Override
-  public Object visitRecursiveSequentialProcFunc(SequentialProcFunc ast, Object o) {
-    return null;
-  }
+  // Records the declarations in the identification table
 
   @Override
   public Object visitRecursiveProcRec1(ProcDeclaration ast, Object o) {
@@ -460,6 +476,8 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
+  // Visits the body of the procedure
+
   @Override
   public Object visitRecursiveProcRec2(ProcDeclaration ast, Object o) {
     idTable.openScope();
@@ -468,6 +486,8 @@ public final class Checker implements Visitor, RecursiveVisitor {
     idTable.closeScope();
     return null;
   }
+
+  // Records the declarations in the identification table
 
   @Override
   public Object visitRecursiveFuncRec1(FuncDeclaration ast, Object o) {
@@ -481,6 +501,9 @@ public final class Checker implements Visitor, RecursiveVisitor {
     idTable.closeScope();
     return null;
   }
+
+
+  // Visits the body of the function
 
   @Override
   public Object visitRecursiveFuncRec2(FuncDeclaration ast, Object o) {
@@ -878,8 +901,8 @@ public final class Checker implements Visitor, RecursiveVisitor {
     } else if (binding instanceof VarFormalParameter) {
       ast.type = ((VarFormalParameter) binding).T;
       ast.variable = true;
-    } else if (binding instanceof VarExpressionDeclaration) {
-      ast.type = ((VarExpressionDeclaration) binding).T;
+    } else if (binding instanceof VarExpressionDeclaration) {   // Adds the variable behavior to the var expression
+      ast.type = ((VarExpressionDeclaration) binding).T;        // declarations
       ast.variable = true;
     } else
       reporter.reportError("\"%\" is not a const or var identifier",
