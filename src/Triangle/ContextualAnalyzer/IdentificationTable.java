@@ -58,17 +58,28 @@ public final class IdentificationTable {
   }
 
 
+  // Opens a private declaration in the identification table,
+  // pushing to the stack the latest IdEntry with represents the
+  // last public block
+
+
   public void openPrivate() {
     IdEntry publicLatest = this.latest;
     publicEntry.push(publicLatest);
 
   }
 
+  // Opens a public declaration in the identification table,
+  // pushing to the stack the latest IdEntry with represents the
+  // last private block
 
   public void openPublic() {
     IdEntry privateLatest = this.latest;
     privateEntry.push(privateLatest);
   }
+
+  // Closes a private declaration discarding all entries
+  // belonging to the private block
 
   public void closePrivate() {
 
@@ -77,20 +88,11 @@ public final class IdentificationTable {
     pubEntry = publicEntry.pop();
 
     entry = this.latest;
-    while (!(entry.previous == priEntry)) {
+    while (entry.previous != priEntry) {
       entry = entry.previous;
     }
 
-    tmp = entry.previous;
-
-    while (!(tmp.previous == pubEntry)) {
-      local = tmp;
-      tmp = local.previous;
-    }
-
-    entry.previous = tmp;
-
-    this.latest = entry;
+    entry.previous = pubEntry;
 
   }
 

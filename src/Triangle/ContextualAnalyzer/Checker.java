@@ -88,11 +88,16 @@ public final class Checker implements Visitor, RecursiveVisitor {
 
   @Override
   public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
+    ast.C.visit(this, null);
     return null;
   }
 
   @Override
   public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (!eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+    ast.C.visit(this, null);
     return null;
   }
 
