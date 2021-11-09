@@ -602,16 +602,38 @@ public final class Checker implements Visitor, RecursiveVisitor {
   }
 
 
+  //Check the expression is Integer
+  //Add the identifier to identification table
+  // Return Null if everything is OK
+
   @Override
   public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
+      TypeDenoter eType = (TypeDenoter) ast.E.visit(this,null);
+      if (!eType.equals(StdEnvironment.integerType))
+          reporter.reportError("Integer expression expected in first expression", "", ast.E.position);
+      else if (ast.duplicated)
+        reporter.reportError("identifier \"%\" already declared",ast.I.spelling, ast.position);
+      else
+          idTable.enter(ast.I.spelling, ast);
     return null;
   }
-
+  
+  //Check the expression is ArrayTypeDenoter
+  //Add the identifier to identification table
+  // Return Null if everything is OK
   @Override
   public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
+    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (!(eType instanceof ArrayTypeDenoter))
+      reporter.reportError("Arrayexpression expected here", "", ast.E.position);
+    else if (ast.duplicated)
+      reporter.reportError("identifier \"%\" already declared",ast.I.spelling, ast.position);
+    else
+        idTable.enter(ast.I.spelling,ast);
     return null;
   }
 
+  
   // Array Aggregates
 
   // Returns the TypeDenoter for the Array Aggregate. Does not use the
