@@ -610,11 +610,12 @@ public final class Checker implements Visitor, RecursiveVisitor {
   public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
       TypeDenoter eType = (TypeDenoter) ast.E.visit(this,null);
       if (!eType.equals(StdEnvironment.integerType))
-          reporter.reportError("Integer expression expected in first expression", "", ast.E.position);
-      else if (ast.duplicated)
-        reporter.reportError("identifier \"%\" already declared",ast.I.spelling, ast.position);
-      else
-          idTable.enter(ast.I.spelling, ast);
+        reporter.reportError("Integer expression expected in first expression", "", ast.E.position);
+      else {
+        idTable.enter(ast.I.spelling, ast);
+        if (ast.duplicated)
+          reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+      } 
     return null;
   }
   
@@ -626,10 +627,11 @@ public final class Checker implements Visitor, RecursiveVisitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!(eType instanceof ArrayTypeDenoter))
       reporter.reportError("Arrayexpression expected here", "", ast.E.position);
-    else if (ast.duplicated)
-      reporter.reportError("identifier \"%\" already declared",ast.I.spelling, ast.position);
-    else
-        idTable.enter(ast.I.spelling,ast);
+    else{
+      idTable.enter(ast.I.spelling, ast);
+      if (ast.duplicated)
+        reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+    }
     return null;
   }
 
