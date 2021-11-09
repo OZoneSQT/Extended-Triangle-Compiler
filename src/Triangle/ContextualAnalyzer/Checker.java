@@ -27,7 +27,6 @@ Subrutinas modificadas
 
 Subrutinas agregadas
 
-
 * visitRecursiveDeclaration()
 * visitSequentialProcFunc()
 * visitRecursiveProcRec1()
@@ -40,16 +39,20 @@ Subrutinas agregadas
 * visitRepeatWhile()
 * visitRepeatDo()
 * visitVarExpressionDeclaration()
+* visitRepeatForRangeWhileCommand()
+* visitRepeatForRangeUntilCommand()
+* visitRepeatForRangeDoCommand()
+* visitRepeatForInCommand()
 
 Autores:
 Eric Alpizar y Jacob Picado
 
-Descripción:
+DescripciÃ³n:
 
 Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
 todas las reglas contextuales de triangulo extendido
 
-Ultima fecha de modificación:
+Ultima fecha de modificaciÃ³n:
 
 06/11/2021
 
@@ -204,23 +207,91 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
 
+  /*
+   * Check the second expression  is integer
+   * visit the RangeVarDecl
+   * Check the third expression  is boolean
+   * Visit the Command
+   * Return null if everythong is OK*/
   @Override
   public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
+    TypeDenoter e2Type = (TypeDenoter) ast.E1.visit(this, null);
+
+    //2. Check that the both expression are integer
+    if (!e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected in second expression", "", ast.E1.position);
+    else {
+      idTable.openScope();
+          ast.RVD.visit(this, null);
+          TypeDenoter e3Type = (TypeDenoter) ast.E2.visit(this, null);
+          if (!e3Type.equals(StdEnvironment.booleanType))
+            reporter.reportError("Boolean expression expected in third expression", "", ast.E2.position);
+
+          ast.C.visit(this, null);
+      idTable.closeScope();
+    }
     return null;
+
   }
 
+  /*
+   * Check the second expression  is integer
+   * visit the RangeVarDecl
+   * Check the third expression  is boolean
+   * Visit the Command
+   * Return null if everythong is OK*/
   @Override
   public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
+    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+
+    //2. Check that the both expression are integer
+    if (!e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected in second expression", "", ast.E2.position);
+    else {
+      idTable.openScope();
+          ast.RVD.visit(this, null);
+          TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+          if (!e3Type.equals(StdEnvironment.booleanType))
+            reporter.reportError("Boolean expression expected in third expression", "", ast.E3.position);
+          else
+            ast.C.visit(this, null);
+      idTable.closeScope();
+    }
     return null;
   }
-
+  
+  /*
+  * Check the second expression  is integer
+  * visit the RangeVarDecl
+  * Visit the Command
+  * Return null if everythong is OK*/
   @Override
   public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
+    //1. Get the type denoter of the two expressions
+    //1.1. In the e1type's case we need to get it from RVD.
+    TypeDenoter e2Type = (TypeDenoter) ast.E2.visit(this, null);
+
+    if (!e2Type.equals(StdEnvironment.integerType))
+      reporter.reportError("Integer expression expected in second expression", "", ast.E2.position);
+    else{
+      idTable.openScope();
+        ast.RVD.visit(this, null);
+        ast.C.visit(this, null);
+      idTable.closeScope();
+    }
+
     return null;
   }
-
+  
+  /*
+  * Open the scope and visit the InVarDecl and the Command
+  * Return Null if everything is OK */
   @Override
   public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
+    idTable.openScope();
+    ast.IVD.visit(this, null);
+    ast.C.visit(this, null);
+    idTable.closeScope();
     return null;
   }
 
@@ -508,7 +579,7 @@ public final class Checker implements Visitor, RecursiveVisitor {
   @Override
   public Object visitRecursiveFuncRec2(FuncDeclaration ast, Object o) {
     ast.T = (TypeDenoter) ast.T.visit(this, null);                  // Es necesario para utilizarlo recursivamente en otras
-    idTable.openScope();                                                 // funciones y que la verificación de tipo funcione
+    idTable.openScope();                                                 // funciones y que la verificaciÃ³n de tipo funcione
     ast.FPS.visit(this, null);
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     idTable.closeScope();
@@ -882,7 +953,12 @@ public final class Checker implements Visitor, RecursiveVisitor {
     }
     return ast.type;
   }
-
+  
+ /*Check if the declaration is instance of RangeVarDecl/InVarDecl
+  * If its true ast.variable will be false because the id cannot be 
+  * a var parameter.
+  * In InVarDecla case ast.type get the Array.Type.
+  */
   public Object visitSimpleVname(SimpleVname ast, Object o) {
     ast.variable = false;
     ast.type = StdEnvironment.errorType;
@@ -904,6 +980,13 @@ public final class Checker implements Visitor, RecursiveVisitor {
     } else if (binding instanceof VarExpressionDeclaration) {   // Adds the variable behavior to the var expression
       ast.type = ((VarExpressionDeclaration) binding).T;        // declarations
       ast.variable = true;
+    } else if (binding instanceof RangeVarDeclaration) { 
+      ast.type = ((RangeVarDeclaration) binding).E.type;
+      ast.variable = false;
+    } else if (binding instanceof InVarDeclaration) {
+      ArrayTypeDenoter ATD = (ArrayTypeDenoter) ((InVarDeclaration) binding).E.type;
+      ast.type = ATD.T;
+      ast.variable = false;
     } else
       reporter.reportError("\"%\" is not a const or var identifier",
               ast.I.spelling, ast.I.position);
