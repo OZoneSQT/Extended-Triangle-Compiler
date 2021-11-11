@@ -220,16 +220,16 @@ public final class Checker implements Visitor, RecursiveVisitor {
     //2. Check that the both expression are integer
     if (!e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected in second expression", "", ast.E1.position);
-    else {
-      idTable.openScope();
-          ast.RVD.visit(this, null);
-          TypeDenoter e3Type = (TypeDenoter) ast.E2.visit(this, null);
-          if (!e3Type.equals(StdEnvironment.booleanType))
-            reporter.reportError("Boolean expression expected in third expression", "", ast.E2.position);
+    
+    idTable.openScope();
+        ast.RVD.visit(this, null);
+        TypeDenoter e3Type = (TypeDenoter) ast.E2.visit(this, null);
+        if (!e3Type.equals(StdEnvironment.booleanType))
+          reporter.reportError("Boolean expression expected in third expression", "", ast.E2.position);
 
-          ast.C.visit(this, null);
-      idTable.closeScope();
-    }
+        ast.C.visit(this, null);
+    idTable.closeScope();
+    
     return null;
 
   }
@@ -247,16 +247,16 @@ public final class Checker implements Visitor, RecursiveVisitor {
     //2. Check that the both expression are integer
     if (!e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected in second expression", "", ast.E2.position);
-    else {
-      idTable.openScope();
-          ast.RVD.visit(this, null);
-          TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
-          if (!e3Type.equals(StdEnvironment.booleanType))
-            reporter.reportError("Boolean expression expected in third expression", "", ast.E3.position);
-          else
-            ast.C.visit(this, null);
-      idTable.closeScope();
-    }
+    
+    idTable.openScope();
+        ast.RVD.visit(this, null);
+        TypeDenoter e3Type = (TypeDenoter) ast.E3.visit(this, null);
+        if (!e3Type.equals(StdEnvironment.booleanType))
+          reporter.reportError("Boolean expression expected in third expression", "", ast.E3.position);
+        else
+          ast.C.visit(this, null);
+    idTable.closeScope();
+    
     return null;
   }
   
@@ -273,12 +273,12 @@ public final class Checker implements Visitor, RecursiveVisitor {
 
     if (!e2Type.equals(StdEnvironment.integerType))
       reporter.reportError("Integer expression expected in second expression", "", ast.E2.position);
-    else{
-      idTable.openScope();
-        ast.RVD.visit(this, null);
-        ast.C.visit(this, null);
-      idTable.closeScope();
-    }
+    
+    idTable.openScope();
+      ast.RVD.visit(this, null);
+      ast.C.visit(this, null);
+    idTable.closeScope();
+    
 
     return null;
   }
@@ -611,11 +611,11 @@ public final class Checker implements Visitor, RecursiveVisitor {
       TypeDenoter eType = (TypeDenoter) ast.E.visit(this,null);
       if (!eType.equals(StdEnvironment.integerType))
         reporter.reportError("Integer expression expected in first expression", "", ast.E.position);
-      else {
-        idTable.enter(ast.I.spelling, ast);
-        if (ast.duplicated)
-          reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
-      } 
+      
+      idTable.enter(ast.I.spelling, ast);
+      if (ast.duplicated)
+        reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+      
     return null;
   }
   
@@ -627,11 +627,11 @@ public final class Checker implements Visitor, RecursiveVisitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!(eType instanceof ArrayTypeDenoter))
       reporter.reportError("Arrayexpression expected here", "", ast.E.position);
-    else{
-      idTable.enter(ast.I.spelling, ast);
-      if (ast.duplicated)
-        reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
-    }
+    
+    idTable.enter(ast.I.spelling, ast);
+    if (ast.duplicated)
+      reporter.reportError("identifier \"%\" already declared", ast.I.spelling, ast.position);
+    
     return null;
   }
 
