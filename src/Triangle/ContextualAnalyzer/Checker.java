@@ -13,17 +13,14 @@
  */
 
 /*
-
 ITCR- IC-5701 - Proyecto 1
-
 Modificaciones realizadas
-
 Subrutinas modificadas
-
 * visitSimpleVname()
-
+* parseSingleCommand()
+* parseDeclaration()
+* parseSingleDeclaration()
 Subrutinas agregadas
-
 * visitRecursiveDeclaration()
 * visitSequentialProcFunc()
 * visitRecursiveProcRec1()
@@ -40,19 +37,13 @@ Subrutinas agregadas
 * visitRepeatForRangeUntilCommand()
 * visitRepeatForRangeDoCommand()
 * visitRepeatForInCommand()
-
 Autores:
 Eric Alpizar y Jacob Picado
-
 Descripción:
-
 Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
 todas las reglas contextuales de triangulo extendido
-
 Ultima fecha de modificación:
-
 06/11/2021
-
  */
 
 
@@ -621,7 +612,7 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
   
-  //Check the expression is ArrayTypeDenoterhttps://www.youtube.com/watch?v=Y0hUOnzaSeo&ab_channel=EricAlpizar
+  //Check the expression is ArrayTypeDenoter
   //Add the identifier to identification table
   // Return Null if everything is OK
   @Override
