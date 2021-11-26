@@ -123,9 +123,9 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
-
     Frame frame = (Frame) o;
     int loopAddr;
+
     loopAddr = nextInstrAddr;
     ast.C.visit(this, frame);
     ast.E.visit(this, frame);
@@ -135,7 +135,6 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
-
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
 
@@ -151,26 +150,174 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
     return null;
   }
 
   @Override
   public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int loopAddr;
+
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
     return null;
   }
 
   @Override
   public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr, exitAddr;
+
+    int e2Size = (Integer) ast.E1.visit(this, frame);
+    frame = new Frame(frame, e2Size);
+
+    int e1Size = (Integer) ast.RVD.visit(this, frame);
+    frame = new Frame(frame, e1Size);
+
+    jumpAddr = nextInstrAddr;
+
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    //Repetir:
+    loopAddr = nextInstrAddr;
+
+    //Realizar el proceso para el while|until
+    //ast.E2.visit(this, frame);
+
+    
+    int e3Size = (Integer) ast.E2.visit(this, frame);
+    frame = new Frame(frame, e3Size);
+
+    exitAddr = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
+
+    ast.C.visit(this, frame);
+
+    //CALL succ
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+
+    patch(jumpAddr, nextInstrAddr);
+
+    //fetch[id]
+    emit(Machine.LOADop, 1, Machine.STr, -1);
+    //fetch[$Sup]
+    emit(Machine.LOADop, 1, Machine.STr, -3);
+
+    //Call le
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.leDisplacement);
+
+    //JUMPIF a repetir
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+
+    //Salir:
+    patch(exitAddr, nextInstrAddr);
+
+    emit(Machine.POPop, 0, 0, 2);
+
     return null;
   }
 
   @Override
   public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr, exitAddr;
+
+    int e2Size = (Integer) ast.E2.visit(this, frame);
+    frame = new Frame(frame, e2Size);
+
+    int e1Size = (Integer) ast.RVD.visit(this, frame);
+    frame = new Frame(frame, e1Size);
+
+    jumpAddr = nextInstrAddr;
+
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    //Repetir:
+    loopAddr = nextInstrAddr;
+
+    //Realizar el proceso para el while|until
+    //ast.E2.visit(this, frame);
+
+    
+    int e3Size = (Integer) ast.E3.visit(this, frame);
+    frame = new Frame(frame, e3Size);
+
+    exitAddr = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, 0);
+
+    ast.C.visit(this, frame);
+
+    //CALL succ
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+
+    patch(jumpAddr, nextInstrAddr);
+
+    //fetch[id]
+    emit(Machine.LOADop, 1, Machine.STr, -1);
+    //fetch[$Sup]
+    emit(Machine.LOADop, 1, Machine.STr, -3);
+
+    //Call le
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.leDisplacement);
+
+    //JUMPIF a repetir
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+
+    //Salir:
+    patch(exitAddr, nextInstrAddr);
+
+    emit(Machine.POPop, 0, 0, 2);
+
     return null;
   }
 
   @Override
   public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    int e2Size = (Integer) ast.E2.visit(this, frame);
+    frame = new Frame(frame, e2Size);
+
+    int e1Size = (Integer) ast.RVD.visit(this, frame);
+    frame = new Frame(frame, e1Size);
+
+    jumpAddr = nextInstrAddr;
+
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    //Repetir:
+    loopAddr = nextInstrAddr;
+
+    ast.C.visit(this, frame);
+
+    //CALL succ
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.succDisplacement);
+
+    patch(jumpAddr, nextInstrAddr);
+
+    //fetch[id]
+    emit(Machine.LOADop, 1, Machine.STr, -1);
+    //fetch[$Sup]
+    emit(Machine.LOADop, 1, Machine.STr, -3);
+
+    //Call le
+    emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.leDisplacement);
+
+    //JUMPIF a repetir
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
+
+    emit(Machine.POPop, 0, 0, 2);
+
     return null;
   }
 
@@ -438,7 +585,10 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
-    return null;
+      Frame frame = (Frame) o;
+      Integer valSize = (Integer) ast.E.visit(this, frame);
+      ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
+      return valSize;
   }
 
   @Override
