@@ -619,7 +619,7 @@ public final class Checker implements Visitor, RecursiveVisitor {
     return null;
   }
   
-  //Check the expression is ArrayTypeDenoter
+  //Check the expression is ArrayTypeDenoterhttps://www.youtube.com/watch?v=Y0hUOnzaSeo&ab_channel=EricAlpizar
   //Add the identifier to identification table
   // Return Null if everything is OK
   @Override

@@ -18,6 +18,7 @@ import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import TAM.Instruction;
 import TAM.Machine;
@@ -51,7 +52,6 @@ public final class Encoder implements Visitor {
   public Object visitIfCommand(IfCommand ast, Object o) {
     Frame frame = (Frame) o;
     int jumpifAddr, jumpAddr;
-
     Integer valSize = (Integer) ast.E.visit(this, frame);
     jumpifAddr = nextInstrAddr;
     emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
@@ -95,21 +95,57 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr;
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
     return null;
   }
 
   @Override
   public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpifAddr, jumpAddr;
+    Integer valSize = (Integer) ast.E.visit(this, frame);
+    jumpifAddr = nextInstrAddr;
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
+    ast.C.visit(this, frame);
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    patch(jumpifAddr, nextInstrAddr);
+    ast.CIF.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
     return null;
   }
 
+
   @Override
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
+
+    Frame frame = (Frame) o;
+    int loopAddr;
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
   @Override
   public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    jumpAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    loopAddr = nextInstrAddr;
+    ast.C.visit(this, frame);
+    patch(jumpAddr, nextInstrAddr);
+    ast.E.visit(this, frame);
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
 
@@ -320,7 +356,13 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitSequentialProcFunc(SequentialProcFunc ast, Object o) {
-    return null;
+    Frame frame = (Frame) o;
+    int extraSize1, extraSize2;
+
+    extraSize1 = ((Integer) ast.PFD1.visit(this, frame)).intValue();
+    Frame frame1 = new Frame (frame, extraSize1);
+    extraSize2 = ((Integer) ast.PFD2.visit(this, frame1)).intValue();
+    return new Integer(extraSize1 + extraSize2);
   }
 
   public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
@@ -347,17 +389,51 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitLocalDeclaration(LocalDeclaration ast, Object o) {
-    return null;
+    Frame frame = (Frame) o;
+    int extraSize1, extraSize2;
+    extraSize1 = ((Integer) ast.D1.visit(this, frame)).intValue();
+    Frame frame1 = new Frame (frame, extraSize1);
+    extraSize2 = ((Integer) ast.D2.visit(this, frame1)).intValue();
+    return new Integer(extraSize1 + extraSize2);
   }
 
   @Override
   public Object visitRecursiveDeclaration(RecursiveDeclaration ast, Object o) {
-    return null;
+    Frame frame = (Frame) o;
+    int extraSize;
+
+    machineEnabled = false;
+    int nextInstrAddrTemp = nextInstrAddr;
+
+    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();
+    nextInstrAddr  = nextInstrAddrTemp;
+    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();
+
+    machineEnabled = true;
+    nextInstrAddr  = nextInstrAddrTemp;
+    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();
+    return new Integer(extraSize);
   }
+
+
 
   @Override
   public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o) {
-    return null;
+
+    Frame frame = (Frame) o;
+    int extraSize;
+
+    if (ast.E instanceof CharacterExpression || ast.E instanceof IntegerExpression ) {
+      extraSize = ((Integer) ast.E.visit(this, null)).intValue();
+      ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
+    } else {
+      Integer valSize = (Integer) ast.E.visit(this, frame);
+      ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
+      extraSize = valSize.intValue();
+    }
+
+    writeTableDetails(ast);
+    return new Integer(extraSize);
   }
 
   @Override
@@ -848,6 +924,7 @@ public final class Encoder implements Visitor {
   // The address of the next instruction is held in nextInstrAddr.
 
   private int nextInstrAddr;
+  private boolean machineEnabled = true;
 
   // Appends an instruction, with the given fields, to the object code.
   private void emit (int op, int n, int r, int d) {
@@ -863,14 +940,18 @@ public final class Encoder implements Visitor {
     if (nextInstrAddr == Machine.PB)
       reporter.reportRestriction("too many instructions for code segment");
     else {
+      if (machineEnabled) {
         Machine.code[nextInstrAddr] = nextInstr;
         nextInstrAddr = nextInstrAddr + 1;
+      }	else {
+        nextInstrAddr = nextInstrAddr + 1;
+      }
     }
   }
 
   // Patches the d-field of the instruction at address addr.
   private void patch (int addr, int d) {
-    Machine.code[addr].d = d;
+    if (machineEnabled) Machine.code[addr].d = d;
   }
 
   // DATA REPRESENTATION

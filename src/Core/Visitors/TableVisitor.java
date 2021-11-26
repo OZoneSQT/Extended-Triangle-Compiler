@@ -275,7 +275,9 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitSequentialProcFunc(SequentialProcFunc ast, Object o) {
-        return null;
+        ast.PFD1.visit(this, null);
+        ast.PFD2.visit(this, null);
+        return(null);
     }
 
     public Object visitTypeDeclaration(TypeDeclaration ast, Object o) {
@@ -309,7 +311,8 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitRecursiveDeclaration(RecursiveDeclaration ast, Object o) {
-        return null;
+        ast.PF.visit(this, null);
+        return(null);
     }
 
     @Override

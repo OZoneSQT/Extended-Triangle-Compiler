@@ -94,11 +94,11 @@ public class IDECompiler {
             if (report.numErrors == 0) {
                 System.out.println("Code Generation ...");
                 Encoder encoder = new Encoder(report);
-                //encoder.encodeRun(rootAST, false);   DISABLED FOR THE FIRST PROJECT
+                encoder.encodeRun(rootAST, false);
                 
                 if (report.numErrors == 0) {
 
-                    //encoder.saveObjectProgram(sourceName.replace(".tri", ".tam"));  DISABLED FOR THE FIRST PROJECT
+                    encoder.saveObjectProgram(sourceName.replace(".tri", ".tam"));
                     Writer xmlWriter = new Writer(sourceName.replace(".tri", ".xml"));
                     xmlWriter.write(rootAST);
                     success = true;
