@@ -21,9 +21,6 @@ Modificaciones realizadas
 Subrutinas modificadas
 
 * visitSimpleVname()
-* parseSingleCommand()
-* parseDeclaration()
-* parseSingleDeclaration()
 
 Subrutinas agregadas
 

@@ -91,9 +91,7 @@ public final class IdentificationTable {
     while (entry.previous != priEntry) {
       entry = entry.previous;
     }
-
     entry.previous = pubEntry;
-
   }
 
 
