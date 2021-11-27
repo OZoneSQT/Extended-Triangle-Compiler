@@ -121,8 +121,13 @@ public final class Checker implements Visitor, RecursiveVisitor {
     ast.C2.visit(this, null);
     return null;
   }
-  
-  
+
+  @Override
+  public Object visitWhileCommand(WhileCommand ast, Object o) {
+    return null;
+  }
+
+
   //comment the visitor of 'while command' to delete this function contextual analysis of 'while command' that doesn't exist now
 
   /*

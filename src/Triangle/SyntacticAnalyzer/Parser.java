@@ -282,9 +282,18 @@ public class Parser {
         Expression eAST = parseExpression();
         accept(Token.THEN);
         Command c1AST = parseCommand();
-        Command roifAST = parseRestOfIf();
-        finish(commandPos);
-        commandAST = new IfCommand(eAST, c1AST, roifAST, commandPos);
+
+        if (currentToken.kind == Token.ELSE) {
+            acceptIt();
+            Command c2AST = parseCommand();
+            accept(Token.END);
+            finish(commandPos);
+            commandAST = new IfCommand(eAST, c1AST, c2AST, commandPos);
+        } else {
+            Command roifAST = parseRestOfIf();
+            finish(commandPos);
+            commandAST = new IfCommand(eAST, c1AST, roifAST, commandPos);
+            }
         }
       break;
 
@@ -455,19 +464,17 @@ public class Parser {
         Expression eAST = parseExpression();
         accept(Token.THEN);
         Command cAST = parseCommand();
-        Command crifAST = parseRestOfIf();
-        finish(commandPos);
-        commandAST = new CondRestOfIf(eAST, cAST, crifAST, commandPos);
-      }
-      break;
-
-      case Token.ELSE:
-      {
-        acceptIt();
-        Command cAST = parseCommand();
-        accept(Token.END);
-        finish(commandPos);
-        commandAST = new EndRestOfIF(cAST, commandPos);
+        if (currentToken.kind == Token.ELSE) {
+            acceptIt();
+            Command c2AST = parseCommand();
+            accept(Token.END);
+            finish(commandPos);
+            commandAST = new IfCommand(eAST, cAST, c2AST, commandPos);
+          } else {
+            Command crifAST = parseRestOfIf();
+            finish(commandPos);
+            commandAST = new IfCommand(eAST, cAST, crifAST, commandPos);
+        }
       }
       break;
 
