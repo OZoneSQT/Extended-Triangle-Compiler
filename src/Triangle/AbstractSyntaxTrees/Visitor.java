@@ -24,8 +24,6 @@ public interface Visitor {
   public abstract Object visitLetCommand(LetCommand ast, Object o);
   public abstract Object visitSequentialCommand(SequentialCommand ast, Object o);
   public abstract Object visitWhileCommand(WhileCommand ast, Object o);
-  public abstract Object visitEndRestOfIf(EndRestOfIF ast, Object o);
-  public abstract Object visitCondRestOfIf(CondRestOfIf ast, Object o);
   public abstract Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o);
   public abstract Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o);
   public abstract Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o);

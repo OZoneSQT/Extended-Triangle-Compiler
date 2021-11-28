@@ -93,33 +93,6 @@ public final class Encoder implements Visitor {
     return null;
   }
 
-  @Override
-  public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpAddr;
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
-    return null;
-  }
-
-  @Override
-  public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpifAddr, jumpAddr;
-    Integer valSize = (Integer) ast.E.visit(this, frame);
-    jumpifAddr = nextInstrAddr;
-    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, 0);
-    ast.C.visit(this, frame);
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    patch(jumpifAddr, nextInstrAddr);
-    ast.CIF.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
-    return null;
-  }
-
 
   @Override
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
@@ -323,6 +296,13 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
+    Frame frame = (Frame) o;
+    int jumpAddr, loopAddr;
+
+    int IVDSize = (Integer) ast.IVD.visit(this, frame);
+    frame = new Frame(frame, IVDSize);
+
+
     return null;
   }
 
@@ -593,6 +573,42 @@ public final class Encoder implements Visitor {
 
   @Override
   public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
+    // elaborate [[ Id in Exp ]]
+    Frame frame = (Frame) o;
+    Integer arraySize, elemSize;
+
+    // evaluate Exp
+    arraySize = ((Integer) ast.E.visit(this, frame)); // Returns the size of the array expression
+    ast.E.entity = new KnownAddress(arraySize, frame.level, frame.size);
+
+    // elaborate Id
+    elemSize = (Integer) ast.I.visit(this, frame);
+    emit(Machine.PUSHop, 0, 0, elemSize);
+    ast.entity = new KnownAddress(elemSize, frame.level, frame.size + arraySize);
+
+    if (ast.E instanceof VnameExpression) {
+      // Loads the max displacement for the array
+      encodeFetchAddress(((VnameExpression) ast.E).V, frame);
+      emit(Machine.LOADLop, 0, 0, arraySize-elemSize);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
+
+      // Loads the first element displacement
+      encodeFetchAddress(((VnameExpression) ast.E).V, frame);
+    }
+    else {
+      // Loads the max displacement for the array
+      emit(Machine.LOADAop, 0,
+              displayRegister(frame.level, ((KnownAddress)ast.E.entity).address.level),
+              ((KnownAddress)ast.E.entity).address.displacement + (arraySize-elemSize));
+
+      // Loads the first element displacement
+      emit(Machine.LOADAop, 0,
+              displayRegister(frame.level, ((KnownAddress)ast.E.entity).address.level),
+              ((KnownAddress)ast.E.entity).address.displacement);
+    }
+
+    // Returns a pair with the size of the array and the size of the array element type
+    //return new InVarDeclData(arraySize, elemSize);
     return null;
   }
 

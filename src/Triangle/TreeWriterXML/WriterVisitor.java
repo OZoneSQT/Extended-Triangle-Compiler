@@ -89,21 +89,6 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
-        writeTag("<RestOfIf>");
-        ast.C.visit(this, null);
-        writeTag("</RestOfIf>");
-        return null;
-    }
-
-    @Override
-    public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
-        writeTag("<RestOfIf>");
-        ast.C.visit(this, null);
-        writeTag("</RestOfIf>");
-        return null;
-    }
-
     @Override
     public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
         writeTag("<RepeatDoWhileCommand>");

@@ -97,10 +97,6 @@ public class LayoutVisitor implements Visitor {
     return layoutBinary("WhileCom.", ast.E, ast.C);
   }
 
-  public Object visitEndRestOfIf(EndRestOfIF ast, Object obj) { return  layoutUnary("ElseRestOfIf", ast.C);}
-
-  public Object visitCondRestOfIf(CondRestOfIf ast, Object obj) { return layoutTernary("CondRestOfIf", ast.E, ast.C, ast.CIF);}
-
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) { return layoutBinary("RepeatDoWhile", ast.C, ast.E); }
 
   public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) { return layoutBinary("RepeatWhile", ast.E, ast.C); }

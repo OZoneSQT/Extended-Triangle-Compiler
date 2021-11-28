@@ -90,13 +90,6 @@ public class TreeVisitor implements Visitor {
         return(createBinary("While Command", ast.E, ast.C));
     }
 
-    public Object visitEndRestOfIf(EndRestOfIF ast, Object obj) {
-        return(createUnary("Rest of If", ast.C));
-    }
-
-    public Object visitCondRestOfIf(CondRestOfIf ast, Object obj) {
-        return(createTernary("RestOfIf", ast.E, ast.C, ast.CIF));
-    }
 
     public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
         return(createBinary("RepeatDoWhile", ast.C, ast.E));

@@ -119,37 +119,6 @@ public final class Checker implements Visitor, RecursiveVisitor {
   }
 
 
-  //comment the visitor of 'while command' to delete this function contextual analysis of 'while command' that doesn't exist now
-
-  /*
-  public Object visitWhileCommand(WhileCommand ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (!eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
-    ast.C.visit(this, null);
-    return null;
-  }
-  */
-
-  @Override
-  public Object visitEndRestOfIf(EndRestOfIF ast, Object o) {
-    ast.C.visit(this, null);
-    return null;
-  }
-
-  // Checks if the type of the condition is boolean and
-  // visits the command inside, returns null is everything
-  // is OK.
-
-  @Override
-  public Object visitCondRestOfIf(CondRestOfIf ast, Object o) {
-    TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
-    if (!eType.equals(StdEnvironment.booleanType))
-      reporter.reportError("Boolean expression expected here", "", ast.E.position);
-    ast.C.visit(this, null);
-    return null;
-  }
-
   // Checks if the type of the condition is boolean and
   // visits the command inside, returns null is everything
   // is OK.
