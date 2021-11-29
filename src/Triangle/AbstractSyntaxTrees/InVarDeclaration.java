@@ -9,11 +9,11 @@ Modificaciones realizadas
 Autores:
 Eric Alpizar y Jacob Picado
 
-Descripción:
+DescripciÃ³n:
 
 Nueva estructura de datos para el AST de InVarDeclaration
 
-Ultima fecha de modificación:
+Ultima fecha de modificaciÃ³n:
 
 28/09/2021
 
@@ -41,5 +41,6 @@ public class InVarDeclaration extends Declaration {
 
     public Identifier I;
     public Expression E;
+    public TypeDenoter T;
 
 }
