@@ -594,6 +594,7 @@ public final class Checker implements Visitor, RecursiveVisitor {
     TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
     if (!(eType instanceof ArrayTypeDenoter))
       reporter.reportError("Arrayexpression expected here", "", ast.E.position);
+    else ast.T = (TypeDenoter) ((ArrayTypeDenoter) eType).T.visit(this, null);
     
     idTable.enter(ast.I.spelling, ast);
     if (ast.duplicated)
