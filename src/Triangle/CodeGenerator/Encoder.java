@@ -10,7 +10,37 @@
  * This software is provided free for educational use only. It may
  * not be used for commercial purposes without the prior written permission
  * of the authors.
+ *
  */
+
+/*
+ITCR- IC-5701 - Proyecto 3
+Modificaciones realizadas
+Subrutinas modificadas
+
+* emit()
+* patch()
+
+Subrutinas agregadas
+* visitRecursiveDeclaration()
+* visitSequentialProcFunc()
+* visitLocalDeclaration()
+* visitRepeatWhile()
+* visitRepeatDo()
+* visitVarExpressionDeclaration()
+* visitRepeatForRangeWhileCommand()
+* visitRepeatForRangeUntilCommand()
+* visitRepeatForRangeDoCommand()
+* visitRepeatForInCommand()
+Autores:
+Eric Alpizar y Jacob Picado
+Descripción:
+Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
+todas las reglas contextuales de triangulo extendido
+Ultima fecha de modificación:
+06/11/2021
+ */
+
 
 package Triangle.CodeGenerator;
 
@@ -79,20 +109,11 @@ public final class Encoder implements Visitor {
     return null;
   }
 
-  public Object visitWhileCommand(WhileCommand ast, Object o) {
-    Frame frame = (Frame) o;
-    int jumpAddr, loopAddr;
 
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    loopAddr = nextInstrAddr;
-    ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
-    ast.E.visit(this, frame);
-    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
-    return null;
-  }
-
+  /*
+   * Generate the necessary instructions for a repeat do until
+   * without address patching problems
+   */
 
   @Override
   public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
@@ -106,20 +127,33 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  /*
+   * Generate the necessary instructions for a repeat while
+   * command cautiously storing the right addresses when the
+   * code is generated
+   */
+
   @Override
   public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
 
     jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    loopAddr = nextInstrAddr;
+    emit(Machine.JUMPop, 0, Machine.CBr, 0);  // Instructions that jumps to evaluate boolean expression
+    loopAddr = nextInstrAddr;     // Address for executing the command in case the expression is evaluated to TRUE
     ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
+    patch(jumpAddr, nextInstrAddr);  // Patches the necessary address for evaluating the boolean expression
     ast.E.visit(this, frame);
     emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
     return null;
   }
+
+
+  /*
+   * Generate the necessary instructions for a repeat until
+   * command cautiously storing the right addresses when the
+   * code is generated
+   */
 
   @Override
   public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
@@ -127,14 +161,19 @@ public final class Encoder implements Visitor {
     int jumpAddr, loopAddr;
 
     jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+    emit(Machine.JUMPop, 0, Machine.CBr, 0); // Instructions that jumps to evaluate boolean expression
     loopAddr = nextInstrAddr;
     ast.C.visit(this, frame);
-    patch(jumpAddr, nextInstrAddr);
+    patch(jumpAddr, nextInstrAddr);   // Patches the necessary address for evaluating the boolean expression
     ast.E.visit(this, frame);
-    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr);
+    emit(Machine.JUMPIFop, Machine.falseRep, Machine.CBr, loopAddr); // Compares the expression to FALSE
     return null;
   }
+
+  /*
+   * Generate the necessary instructions for a repeat do until
+   * without address patching problems
+   */
 
   @Override
   public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
@@ -365,6 +404,13 @@ public final class Encoder implements Visitor {
     return new Integer(0);
   }
 
+  /*
+  * Generates the code of an if expression in the same way
+  * as it was originally processed by not extended triangle
+  * compiler
+  */
+
+
   public Object visitIfExpression(IfExpression ast, Object o) {
     Frame frame = (Frame) o;
     Integer valSize;
@@ -502,6 +548,13 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize1 + extraSize2);
   }
 
+  /*
+   * Similarly to the original sequential declarations in the not extended
+   * version of triangle, the sequential procFuncs are processed  recursively
+   * visiting the Proc or Funcs inside the AST
+   */
+
+
   @Override
   public Object visitSequentialProcFunc(SequentialProcFunc ast, Object o) {
     Frame frame = (Frame) o;
@@ -535,6 +588,11 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize);
   }
 
+  /*
+   * Generates the code for the new local declarations in extended triangle,
+   * it does this very similarly to the sequential declarations.
+   */
+
   @Override
   public Object visitLocalDeclaration(LocalDeclaration ast, Object o) {
     Frame frame = (Frame) o;
@@ -545,25 +603,34 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize1 + extraSize2);
   }
 
+  /*
+   * Generates the code for the new local declarations in extended triangle,
+   * it does this very similarly to the sequential declarations.
+   */
+
   @Override
   public Object visitRecursiveDeclaration(RecursiveDeclaration ast, Object o) {
     Frame frame = (Frame) o;
     int extraSize;
 
-    machineEnabled = false;
-    int nextInstrAddrTemp = nextInstrAddr;
+    machineEnabled = false;                // Disables the boolean expression in order to not generate code
+    int nextInstrAddrTemp = nextInstrAddr; // and calculate only the entry points recursively
 
-    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();
+    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();     // First Pass
     nextInstrAddr  = nextInstrAddrTemp;
     extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();
 
     machineEnabled = true;
     nextInstrAddr  = nextInstrAddrTemp;
-    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue();
+    extraSize = ((Integer) ast.PF.visit(this, frame)).intValue(); // Second pass
     return new Integer(extraSize);
   }
 
-
+  /*
+   * Generates the code for the new variable declarations instantiated
+   * with an expression. It does this very similarly to the constant
+   * declarations but with slight changes.
+   */
 
   @Override
   public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o) {
@@ -608,7 +675,7 @@ public final class Encoder implements Visitor {
       ast.entity = new KnownAddress (tSize, frame.level, frame.size + ilSize);
 
       if (ast.E  instanceof  VnameExpression){
-        //
+
         encodeFetchAddress(((VnameExpression) ast.E).V, frame);
         emit(Machine.LOADLop, 0, 0, ilSize-tSize);
         emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
@@ -1100,7 +1167,7 @@ public final class Encoder implements Visitor {
   // The address of the next instruction is held in nextInstrAddr.
 
   private int nextInstrAddr;
-  private boolean machineEnabled = true;
+  private boolean machineEnabled = true;    // Boolean variable for disabling code generation
 
   // Appends an instruction, with the given fields, to the object code.
   private void emit (int op, int n, int r, int d) {
@@ -1116,7 +1183,7 @@ public final class Encoder implements Visitor {
     if (nextInstrAddr == Machine.PB)
       reporter.reportRestriction("too many instructions for code segment");
     else {
-      if (machineEnabled) {
+      if (machineEnabled) {           // If disabled the code generation is temporarily inactive
         Machine.code[nextInstrAddr] = nextInstr;
         nextInstrAddr = nextInstrAddr + 1;
       }	else {
@@ -1127,7 +1194,7 @@ public final class Encoder implements Visitor {
 
   // Patches the d-field of the instruction at address addr.
   private void patch (int addr, int d) {
-    if (machineEnabled) Machine.code[addr].d = d;
+    if (machineEnabled) Machine.code[addr].d = d; // If disabled the addresses aren't patched
   }
 
   // DATA REPRESENTATION

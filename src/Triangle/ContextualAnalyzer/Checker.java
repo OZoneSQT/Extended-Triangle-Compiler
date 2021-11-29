@@ -13,13 +13,9 @@
  */
 
 /*
-ITCR- IC-5701 - Proyecto 1
+ITCR- IC-5701 - Proyecto 2
 Modificaciones realizadas
-Subrutinas modificadas
-* visitSimpleVname()
-* parseSingleCommand()
-* parseDeclaration()
-* parseSingleDeclaration()
+
 Subrutinas agregadas
 * visitRecursiveDeclaration()
 * visitSequentialProcFunc()
@@ -108,11 +104,6 @@ public final class Checker implements Visitor, RecursiveVisitor {
   public Object visitSequentialCommand(SequentialCommand ast, Object o) {
     ast.C1.visit(this, null);
     ast.C2.visit(this, null);
-    return null;
-  }
-
-  @Override
-  public Object visitWhileCommand(WhileCommand ast, Object o) {
     return null;
   }
 
