@@ -28,8 +28,6 @@ Subrutinas agregadas
 * visitRecursiveFuncRec1()
 * visitRecursiveFuncRec2()
 * visitLocalDeclaration()
-* visitEndRestOfIf()
-* visitCondRestOfIf()
 * visitRepeatWhile()
 * visitRepeatDo()
 * visitVarExpressionDeclaration()
