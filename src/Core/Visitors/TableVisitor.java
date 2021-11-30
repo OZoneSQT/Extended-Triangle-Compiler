@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * Generates a DefaultTableModel, used to draw a Jable.
  *
- * @author Luis Leopoldo Pérez <luiperpe@ns.isi.ulatina.ac.cr>
+ * @author Luis Leopoldo PÃ©rez <luiperpe@ns.isi.ulatina.ac.cr>
  */
 public class TableVisitor implements Visitor {
     
@@ -78,49 +78,93 @@ public class TableVisitor implements Visitor {
       
       return(null);
   }
+    
+  /*
+    * We add the RepeatDoWhile's visitor.
+  */
+  @Override
+  public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
+      ast.E.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
+  /*
+    * We add the RepeatWhile's visitor.
+  */
+  @Override
+  public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+      ast.E.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
-        ast.E.visit(this, null);
-        ast.C.visit(this, null);
-        return null;
-    }
+  /*
+    * We add the RepeatUntil's visitor.
+  */
+  @Override
+  public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
+      ast.E.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
-        return null;
-    }
+  /*
+    * We add the RepeatDoUntil's visitor.
+  */
+  @Override
+  public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
+      ast.E.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatUntilCommand(RepeatUntilCommand ast, Object o) {
-        return null;
-    }
+  /*
+    * We add the RepeatForRangeWhile's visitor.
+  */
+  @Override
+  public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
+      ast.RVD.visit(this, null);
+      ast.E1.visit(this, null);
+      ast.E2.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatDoUntilCommand(RepeatDoUntilCommand ast, Object o) {
-        return null;
-    }
+  /*
+    * We add the RepeatForRangeUntil's visitor.
+  */
+  @Override
+  public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
+      ast.RVD.visit(this, null);
+      ast.E2.visit(this, null);
+      ast.E3.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
-        return null;
-    }
+  /*
+    * We add the RepeatForRangeDo's visitor.
+  */
+  @Override
+  public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
+      ast.RVD.visit(this, null);
+      ast.E2.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
-        return null;
-    }
+  /*
+    * We add the RepeatForIn's visitor.
+  */
+  @Override
+  public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
+      ast.IVD.visit(this, null);
+      ast.C.visit(this, null);
+      return null;
+  }
 
-    @Override
-    public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
-        return null;
-    }
-
-    @Override
-    public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
-        return null;
-    }
+    
     // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" Expressions ">
@@ -339,15 +383,44 @@ public class TableVisitor implements Visitor {
         return(null);
     }
 
-    @Override
-    public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
-        return null;
-    }
+  /*
+    * RangeVarDeclaration's visitor that helps to variants of repeat for range.
+    * This visitor identifies or recognizes the variable declaration.
+  */
+  @Override
+  public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
+      try {
+      addIdentifier(ast.I.spelling, 
+              "KnownAddress",
+              (ast.entity!=null?ast.entity.size:0), 
+              ((KnownAddress)ast.entity).address.level, 
+              ((KnownAddress)ast.entity).address.displacement, 
+              -1);
+      } catch (NullPointerException e) { }
+      
+      ast.E.visit(this, null);
+      return(null);
+  }
 
-    @Override
-    public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
-        return null;
-    }
+
+  /*
+    * InVarDeclaration's visitor that helps to repeat for in.
+    * This visitor identifies or recognizes the variable declaration.
+  */
+  @Override
+  public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
+      try {
+      addIdentifier(ast.I.spelling, 
+              "KnownAddress",
+              (ast.entity!=null?ast.entity.size:0), 
+              ((KnownAddress)ast.entity).address.level, 
+              ((KnownAddress)ast.entity).address.displacement, 
+              -1);
+      } catch (NullPointerException e) { }
+      
+      ast.E.visit(this, null);
+      return(null);
+  }
 
     // </editor-fold>
 
