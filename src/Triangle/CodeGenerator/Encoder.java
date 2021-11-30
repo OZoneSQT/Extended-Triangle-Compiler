@@ -34,10 +34,10 @@ Subrutinas agregadas
 * visitRepeatForInCommand()
 Autores:
 Eric Alpizar y Jacob Picado
-Descripci髇:
+Descripci贸n:
 Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
 todas las reglas contextuales de triangulo extendido
-Ultima fecha de modificaci髇:
+Ultima fecha de modificaci贸n:
 06/11/2021
  */
 
@@ -187,11 +187,16 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  /*
+    * Generate the necessary instructions for a repeat for range until
+    * command cautiously storing the right addresses when the
+    * code is generated.
+  */
   @Override
   public Object visitRepeatForRangeWhileCommand(RepeatForRangeWhileCommand ast, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr, exitAddr;
-
+    //Evalua las expreciones
     int e2Size = (Integer) ast.E1.visit(this, frame);
     frame = new Frame(frame, e2Size);
 
@@ -205,9 +210,7 @@ public final class Encoder implements Visitor {
     loopAddr = nextInstrAddr;
 
     //Realizar el proceso para el while|until
-    //ast.E2.visit(this, frame);
-
-    
+    //Verifica la condici贸n booleana para ver si se sale del ciclo    
     int e3Size = (Integer) ast.E2.visit(this, frame);
     frame = new Frame(frame, e3Size);
 
@@ -240,11 +243,16 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  /*
+   * Generate the necessary instructions for a repeat for range while
+   * command cautiously storing the right addresses when the
+   * code is generated.
+   */
   @Override
   public Object visitRepeatForRangeUntilCommand(RepeatForRangeUntilCommand ast, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr, exitAddr;
-
+    //Evalua las expreciones
     int e2Size = (Integer) ast.E2.visit(this, frame);
     frame = new Frame(frame, e2Size);
 
@@ -258,9 +266,7 @@ public final class Encoder implements Visitor {
     loopAddr = nextInstrAddr;
 
     //Realizar el proceso para el while|until
-    //ast.E2.visit(this, frame);
-
-    
+    //Verifica la condici贸n booleana para ver si se sale del ciclo 
     int e3Size = (Integer) ast.E3.visit(this, frame);
     frame = new Frame(frame, e3Size);
 
@@ -293,11 +299,16 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  /*
+   * Generate the necessary instructions for a repeat for range do
+   * command cautiously storing the right addresses when the
+   * code is generated.
+   */
   @Override
   public Object visitRepeatForRangeDoCommand(RepeatForRangeDoCommand ast, Object o) {
     Frame frame = (Frame) o;
     int jumpAddr, loopAddr;
-
+    //Evalua las expresiones
     int e2Size = (Integer) ast.E2.visit(this, frame);
     frame = new Frame(frame, e2Size);
 
@@ -333,36 +344,55 @@ public final class Encoder implements Visitor {
     return null;
   }
 
+  /*
+   * Generate the necessary instructions for a repeat for in
+   * command cautiously storing the right addresses when the
+   * code is generated.
+   */
   @Override
   public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
     Frame frame = (Frame) o;
-    int jumpEvalAddr, commandAddr, evalAddr; 
+    int jumpAddr, loopAddr; 
 
+    //Obtiene los valores (sizes) del array y el tipo de los elementos
+    //sizes[0]=Size del array || sizes[1]=Size del tipo de los elementos
     Integer [] sizes = (Integer[]) ast.IVD.visit(this, frame);
     int len = (sizes[0]/sizes[1]);
 
-    frame = new Frame (frame.level, (sizes[0]+sizes[1]+2) );
-    jumpEvalAddr = nextInstrAddr;
+    //Se actualiza el frame sumando los sizes sumando el desplazamiento de la pila (el +2)
+    frame = new Frame (frame, (sizes[0]+sizes[1]+2) );
+    
+    jumpAddr = nextInstrAddr;
     emit(Machine.JUMPop, 0, Machine.CBr, 0);
-    commandAddr = nextInstrAddr;
+    //Repetir:
+    loopAddr = nextInstrAddr;
 
+    // Se carga la variable de iteraci贸n actualizandola. 
     emit(Machine.LOADop, Machine.addressSize, Machine.STr, -1*(Machine.addressSize));    
     emit(Machine.LOADIop, sizes[1], 0, 0);     
     emit(Machine.STOREop, sizes[1], Machine.STr, -1*(2*Machine.addressSize + 2*sizes[1])); 
 
     ast.C.visit(this, frame);
 
+    //Actualiza o "selecciona" el siguiente elemento del array
     emit(Machine.LOADLop, 0, 0, sizes[1]);
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
 
-    evalAddr = nextInstrAddr;
-    patch(jumpEvalAddr, evalAddr);
+    patch(jumpAddr, nextInstrAddr);
 
+    //Carga el valor para realizar la comparaci贸n
     emit(Machine.LOADop, 2*Machine.addressSize, Machine.STr, -1*(2*Machine.addressSize));
+    
+    //Call ge
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.geDisplacement);
-    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, commandAddr);
+    
+    //JUMPIF a repetir
+    emit(Machine.JUMPIFop, Machine.trueRep, Machine.CBr, loopAddr);
 
+    //Salir:
     emit(Machine.POPop, 0, 0, (sizes[0]+sizes[1]+2) );
+
+
     return null;
   }
 
@@ -651,6 +681,10 @@ public final class Encoder implements Visitor {
     return new Integer(extraSize);
   }
 
+  /*
+    * Visitor of RVD to helps the repeats for commands
+    * It gets the E's size and write the ast in the table
+  */
   @Override
   public Object visitRangeVarDeclaration(RangeVarDeclaration ast, Object o) {
       Frame frame = (Frame) o;
@@ -659,33 +693,50 @@ public final class Encoder implements Visitor {
       writeTableDetails(ast);
       return valSize;
   }
-
+  /*
+    * Visitor of IVD to helps the repeats for commands
+    * It gets the IL's size and T's size
+  */
   @Override
   public Object visitInVarDeclaration(InVarDeclaration ast, Object o) {
       Frame frame = (Frame) o;
+
+      //Obtiene el size del array (IL) y del elemento (T) -> IL of T.
       Integer ilSize = (Integer) ast.E.visit(this, frame);
-
-      if (! (ast.E instanceof VnameExpression) ){
-        ast.E.entity = new UnknownValue(ilSize, frame.level, frame.size);
-      }
-
       Integer tSize = (Integer) ast.T.visit(this, frame);
 
-      emit(Machine.PUSHop, 0, 0, tSize);
-      ast.entity = new KnownAddress (tSize, frame.level, frame.size + ilSize);
+      if (ast.E instanceof VnameExpression) {
 
-      if (ast.E  instanceof  VnameExpression){
+        //Si es un Vname la expresi贸n no se necesita. Se borra y el push del primer elemento para la variable de iteraci贸n
+        emit(Machine.POPop, 0, 0, ilSize);
+        emit(Machine.PUSHop, 0, 0, tSize);
+        ast.entity = new KnownAddress(tSize, frame.level, frame.size);
 
+        //Se carga el movimiento o desplazamiento m谩ximo del array
         encodeFetchAddress(((VnameExpression) ast.E).V, frame);
-        emit(Machine.LOADLop, 0, 0, ilSize-tSize);
+
+        emit(Machine.LOADLop, 0, 0, (ilSize-tSize));
         emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
+
+        //Carga el movimiento o desplazamiento del primer elemento
         encodeFetchAddress(((VnameExpression) ast.E).V, frame);
+
+        //Se pone el tama帽o del arreglo en 0 ya que no se utiliza
+        ilSize=0;
 
       }else{
+        ast.E.entity = new UnknownValue(ilSize, frame.level, frame.size);
+
+        //Se realiza el push del primer elemento para la variable de iteraci贸n
+        emit(Machine.PUSHop, 0, 0, tSize);
+        ast.entity = new KnownAddress(tSize, frame.level, (frame.size + ilSize));
+
+        //Carga desplazamiento desplazamiento maximo para el array y el desplazamiento del primer elemento
         emit(Machine.LOADAop, 0, displayRegister(frame.level, ((UnknownValue)ast.E.entity).address.level), ((UnknownValue)ast.E.entity).address.displacement+(ilSize-tSize));
         emit(Machine.LOADAop, 0, displayRegister(frame.level, ((UnknownValue)ast.E.entity).address.level), ((UnknownValue)ast.E.entity).address.displacement);
       }
 
+      //Retorna el tama帽o del IL y del T
       return new Integer[] {ilSize, tSize};
   }
 
