@@ -2,7 +2,7 @@
 
 ## Description
 
-An extention for the Triangle compiler that adds various forms of iterative commands, 
+An extension for Triangle compiler that adds various forms of iterative commands, 
 declaration of initialized variables, arrays with defined dimensions, declaration of
 mutually recursive procedures or functions and local (private) compound declarations
 
@@ -20,6 +20,8 @@ The IDE created for this compiler was developed by Doc.Luís Leopoldo Pérez in 
 ## Limitations
 
 The IDE developed for this compiler only works in Microsoft Windows operating system.
+
+This compiler has only been tested with the proprietary Oracle version of the Java 11 SDK.
 
 
 
