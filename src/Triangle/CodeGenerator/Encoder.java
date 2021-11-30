@@ -32,13 +32,16 @@ Subrutinas agregadas
 * visitRepeatForRangeUntilCommand()
 * visitRepeatForRangeDoCommand()
 * visitRepeatForInCommand()
+* visitRangeVarDeclaration() 
+* visitInVarDeclaration()
+
 Autores:
 Eric Alpizar y Jacob Picado
 Descripción:
 Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
 todas las reglas contextuales de triangulo extendido
 Ultima fecha de modificación:
-06/11/2021
+30/11/2021
  */
 
 
@@ -352,33 +355,28 @@ public final class Encoder implements Visitor {
   @Override
   public Object visitRepeatForInCommand(RepeatForInCommand ast, Object o) {
     Frame frame = (Frame) o;
-    int jumpAddr, loopAddr; 
+    int loopAddr;
 
     //Obtiene los valores (sizes) del array y el tipo de los elementos
     //sizes[0]=Size del array || sizes[1]=Size del tipo de los elementos
     Integer [] sizes = (Integer[]) ast.IVD.visit(this, frame);
-    int len = (sizes[0]/sizes[1]);
 
     //Se actualiza el frame sumando los sizes sumando el desplazamiento de la pila (el +2)
     frame = new Frame (frame, (sizes[0]+sizes[1]+2) );
-    
-    jumpAddr = nextInstrAddr;
-    emit(Machine.JUMPop, 0, Machine.CBr, 0);
+
     //Repetir:
     loopAddr = nextInstrAddr;
 
-    // Se carga la variable de iteración actualizandola. 
+    //Se carga la variable de iteración actualizandola.
     emit(Machine.LOADop, Machine.addressSize, Machine.STr, -1*(Machine.addressSize));    
     emit(Machine.LOADIop, sizes[1], 0, 0);     
-    emit(Machine.STOREop, sizes[1], Machine.STr, -1*(2*Machine.addressSize + 2*sizes[1])); 
-
+    emit(Machine.STOREop, sizes[1], Machine.STr, -1*(2*Machine.addressSize + 2*sizes[1]));
+    
     ast.C.visit(this, frame);
 
     //Actualiza o "selecciona" el siguiente elemento del array
     emit(Machine.LOADLop, 0, 0, sizes[1]);
     emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
-
-    patch(jumpAddr, nextInstrAddr);
 
     //Carga el valor para realizar la comparación
     emit(Machine.LOADop, 2*Machine.addressSize, Machine.STr, -1*(2*Machine.addressSize));
@@ -391,8 +389,7 @@ public final class Encoder implements Visitor {
 
     //Salir:
     emit(Machine.POPop, 0, 0, (sizes[0]+sizes[1]+2) );
-
-
+    
     return null;
   }
 
