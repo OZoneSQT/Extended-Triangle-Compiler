@@ -636,19 +636,11 @@ public final class Encoder implements Visitor {
   public Object visitVarExpressionDeclaration(VarExpressionDeclaration ast, Object o) {
 
     Frame frame = (Frame) o;
-    int extraSize;
+    Integer valSize = (Integer) ast.E.visit(this, frame);
 
-    if (ast.E instanceof CharacterExpression || ast.E instanceof IntegerExpression ) {
-      extraSize = ((Integer) ast.E.visit(this, null)).intValue();
-      ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
-    } else {
-      Integer valSize = (Integer) ast.E.visit(this, frame);
-      ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
-      extraSize = valSize.intValue();
-    }
-
-    writeTableDetails(ast);
-    return new Integer(extraSize);
+    emit(Machine.PUSHop, 0, 0, valSize);
+    ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
+    return new Integer(valSize);
   }
 
   @Override
