@@ -35,10 +35,10 @@ Subrutinas agregadas
 Autores:
 Eric Alpizar y Jacob Picado
 Descripción:
-Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
-todas las reglas contextuales de triangulo extendido
-Ultima fecha de modificación:
-06/11/2021
+Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con la
+generación de código de todas neuvas reglas de producción de triangulo extendido
+
+30/11/2021
  */
 
 
@@ -1062,12 +1062,13 @@ public final class Encoder implements Visitor {
   public Object visitSubscriptVname(SubscriptVname ast, Object o) {
     Frame frame = (Frame) o;
     RuntimeEntity baseObject;
-    int elemSize, indexSize;
+    int elemSize, indexSize, arraySize;
 
     baseObject = (RuntimeEntity) ast.V.visit(this, frame);
     ast.offset = ast.V.offset;
     ast.indexed = ast.V.indexed;
     elemSize = ((Integer) ast.type.visit(this, null)).intValue();
+    arraySize = (Integer) ast.V.type.entity.size;
     if (ast.E instanceof IntegerExpression) {
       IntegerLiteral IL = ((IntegerExpression) ast.E).IL;
       ast.offset = ast.offset + Integer.parseInt(IL.spelling) * elemSize;
@@ -1081,10 +1082,17 @@ public final class Encoder implements Visitor {
         emit(Machine.CALLop, Machine.SBr, Machine.PBr,
              Machine.multDisplacement);
       }
-      if (ast.indexed)
+      if (ast.indexed) {
         emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);
+      }
       else
-        ast.indexed = true;
+
+      ast.indexed = true;
+
+      emit(Machine.LOADLop, 0, 0, 0);
+      emit(Machine.LOADLop, 0, 0, arraySize - elemSize);
+      emit(Machine.LOADop, Machine.integerSize, Machine.STr, -3 * Machine.integerSize); // Process for defining the valid indexes
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.aicDisplacement);
     }
     return baseObject;
   }
