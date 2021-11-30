@@ -71,14 +71,6 @@ public class TableVisitor implements Visitor {
       
       return(null);
   }
-  
-  public Object visitWhileCommand(WhileCommand ast, Object o) { 
-      ast.E.visit(this, null);
-      ast.C.visit(this, null);
-      
-      return(null);
-  }
-
 
     @Override
     public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
@@ -89,6 +81,8 @@ public class TableVisitor implements Visitor {
 
     @Override
     public Object visitRepeatWhileCommand(RepeatWhileCommand ast, Object o) {
+        ast.E.visit(this, null);
+        ast.C.visit(this, null);
         return null;
     }
 

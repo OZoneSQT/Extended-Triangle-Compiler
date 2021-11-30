@@ -85,10 +85,6 @@ public class TreeVisitor implements Visitor {
     public Object visitSequentialCommand(SequentialCommand ast, Object obj) {
         return(createBinary("Sequential Command", ast.C1, ast.C2));
     }
-    
-    public Object visitWhileCommand(WhileCommand ast, Object obj) {
-        return(createBinary("While Command", ast.E, ast.C));
-    }
 
 
     public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {

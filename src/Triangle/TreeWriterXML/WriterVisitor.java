@@ -81,13 +81,6 @@ public class WriterVisitor implements Visitor {
         return null;
     }
 
-    public Object visitWhileCommand(WhileCommand ast, Object obj) {
-        writeTag("<WhileCommand>");
-        ast.E.visit(this, null);
-        ast.C.visit(this, null);
-        writeTag("</WhileCommand>");
-        return null;
-    }
 
     @Override
     public Object visitRepeatDoWhileCommand(RepeatDoWhileCommand ast, Object o) {
