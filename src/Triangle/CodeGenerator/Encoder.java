@@ -665,9 +665,7 @@ public final class Encoder implements Visitor {
 
     Frame frame = (Frame) o;
     Integer valSize = (Integer) ast.E.visit(this, frame);
-
-    emit(Machine.PUSHop, 0, 0, valSize);
-    ast.entity = new KnownAddress(Machine.addressSize, frame.level, frame.size);
+    ast.entity = new KnownAddress(valSize, frame.level, frame.size);
     return new Integer(valSize);
   }
 
@@ -1070,6 +1068,12 @@ public final class Encoder implements Visitor {
     if (ast.E instanceof IntegerExpression) {
       IntegerLiteral IL = ((IntegerExpression) ast.E).IL;
       ast.offset = ast.offset + Integer.parseInt(IL.spelling) * elemSize;
+
+      emit(Machine.LOADLop, 0, 0, 0);
+      emit(Machine.LOADLop, 0, 0, arraySize-elemSize);
+      emit(Machine.LOADLop, 0, 0, Integer.parseInt(IL.spelling)*elemSize);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.aicDisplacement);
+
     } else {
       // v-name is indexed by a proper expression, not a literal
       if (ast.indexed)
@@ -1079,6 +1083,7 @@ public final class Encoder implements Visitor {
         emit(Machine.LOADLop, 0, 0, elemSize);
         emit(Machine.CALLop, Machine.SBr, Machine.PBr,
              Machine.multDisplacement);
+
       }
       if (ast.indexed) {
         emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.addDisplacement);

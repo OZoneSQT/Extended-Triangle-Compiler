@@ -432,7 +432,7 @@ public class Interpreter {
         break;
       case Machine.aicDisplacement:
         ST = ST - 3;
-        if (!(data[ST] <= data[ST+2] && data[ST+2] <= data[ST+1])) {
+        if ((data[ST+2] < data[ST] || data[ST+2] > data[ST+1])) {
           status = failedIndexOutOfBounds;
         }
         break;
