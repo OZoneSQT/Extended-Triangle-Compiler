@@ -15,18 +15,18 @@
 
 /*
 
-ITCR- IC-5701 - Proyecto 1
+ITCR- IC-5701 - Project 1
 
-Modificaciones realizadas
+Modifications made
 
-Subrutinas modificadas
+Modified subroutines
 
 * parseCommand()
 * parseSingleCommand()
 * parseDeclaration()
 * parseSingleDeclaration()
 
-Subrutinas agregadas
+Added subroutines
 
 * parseRestOfIf()
 * parseRestOfVname()
@@ -34,15 +34,15 @@ Subrutinas agregadas
 * parseProcFuncs()
 * parseProcFunc()
 
-Autores:
-Eric Alpizar y Jacob Picado
+Authors:
+Eric Alpizar and Jacob Picado
 
-Descripción:
+Description:
 
-Se agregaron y se modificaron multiples subrutinas con el fin de cumplir con
-todas las reglas de produccion de Triangulo extendido
+Multiple subroutines were added and modified in order to comply with
+all Extended Triangle production rules
 
-Ultima fecha de modificación:
+Last modified date:
 
 28/09/2021
 
@@ -443,10 +443,10 @@ public class Parser {
 
   /*
 
-  Nueva subrutina: parseRestOfIf
+  New subroutine: parseRestOfIf
 
-  Se encarga de procesar el restante del comando IF y construye el AST
-  correctamente para representarlo.
+   It is responsible for processing the rest of the IF command and builds the AST
+   correctly to represent it.
 
    */
 
@@ -741,10 +741,10 @@ public class Parser {
 
     /*
 
-    Nueva subrutina: parseCompoundDeclaration()
+     New subroutine: parseCompoundDeclaration()
 
-    Se encarga de procesar respectivamente las nuevas declaraciones
-    compuestas y construye el AST para representarlo
+     It is responsible for processing the new declarations respectively
+     composites and builds the AST to represent it
 
      */
 
@@ -892,11 +892,11 @@ public class Parser {
 
     /*
 
-    Nueva subrutina: parseProcFuncs()
+    New subroutine: parseProcFuncs()
 
-    Encargada de analizar la sintaxis de las nuevas
-    declaraciones Proc-Func y construye su respectivo
-    AST para representarlo.
+     Responsible for analyzing the syntax of the new
+     Proc-Func statements and builds their respective
+     AST to represent it.
 
      */
 
